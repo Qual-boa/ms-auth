@@ -3,6 +3,7 @@ package com.qualaboa.msauth.services;
 import com.qualaboa.msauth.dto.UserDTO;
 import com.qualaboa.msauth.entities.User;
 import com.qualaboa.msauth.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ public class UserService implements IService<UserDTO, UUID> {
     @Autowired
     private UserRepository repository;
 
+    @Transactional
     @Override
     public UserDTO create(UserDTO userDTO) {
         User entity = new User();
@@ -22,9 +24,10 @@ public class UserService implements IService<UserDTO, UUID> {
         return new UserDTO(entity);
     }
 
+    @Transactional
     @Override
-    public UserDTO findById(UUID uuid) {
-        return null;
+    public UserDTO findById(UUID id) {
+        return new UserDTO(repository.getReferenceById(id));
     }
 
     private void copyDTOToEntity(UserDTO dto, User entity){
