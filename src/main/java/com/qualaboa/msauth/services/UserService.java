@@ -5,6 +5,7 @@ import com.qualaboa.msauth.entities.User;
 import com.qualaboa.msauth.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +17,15 @@ public class UserService implements IService<UserDTO, UUID> {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Transactional
     @Override
     public UserDTO create(UserDTO userDTO) {
         User entity = new User();
         copyDTOToEntity(userDTO, entity);
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         entity = repository.save(entity);
         return new UserDTO(entity);
     }

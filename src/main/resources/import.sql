@@ -1,1 +1,1 @@
-INSERT INTO users VALUES ('e3af8953-b40f-4abd-a380-aa232fc3f67c', 'julioaugusto@gmail.com', 'julio213');
+INSERT INTO users VALUES ('e3af8953-b40f-4abd-a380-aa232fc3f67c', 'julioaugusto@gmail.com', '$2a$10$bHtmDusd0xrpxTN6xJyN5OvU20jMX466l6M.Gy6dtNpvmwM/O2R3m');
