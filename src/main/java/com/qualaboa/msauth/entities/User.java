@@ -1,10 +1,20 @@
 package com.qualaboa.msauth.entities;
 
+import com.qualaboa.msauth.entities.enums.RoleEnum;
+import com.qualaboa.msauth.entities.enums.UserTypeEnum;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Objects;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -12,51 +22,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private String name;
     private String email;
     private String password;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    public User(){}
+    @Enumerated(EnumType.STRING)
+    private UserTypeEnum userTypeEnum;
 
-    public User(UUID id, String email, String password) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    @Enumerated(EnumType.STRING)
+    private RoleEnum roleEnum;
 }

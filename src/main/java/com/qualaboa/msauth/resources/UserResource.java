@@ -1,14 +1,17 @@
 package com.qualaboa.msauth.resources;
 
-import com.qualaboa.msauth.dto.UserDTO;
+import com.qualaboa.msauth.dto.CreateUserRequest;
+import com.qualaboa.msauth.dto.UpdateUserRequest;
+import com.qualaboa.msauth.dto.UserResponse;
 import com.qualaboa.msauth.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,19 +22,19 @@ public class UserResource {
     private UserService service;
 
     @PostMapping
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid UserDTO dto){
-        dto = service.create(dto);
-        return ResponseEntity.created(URI.create("/users")).body(dto);
+    public ResponseEntity<UserResponse> save(@RequestBody @Valid CreateUserRequest dto){
+        UserResponse userResponse = service.save(dto);
+        return ResponseEntity.created(URI.create("/users")).body(userResponse);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable UUID id){
+    public ResponseEntity<UserResponse> findById(@PathVariable UUID id){
         return ResponseEntity.ok(service.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> findAll(){
-        return ResponseEntity.ok(service.findAll());
+    public ResponseEntity<Page<UserResponse>> findAll(Pageable pageable){
+        return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @DeleteMapping("/{id}")
@@ -41,9 +44,9 @@ public class UserResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable UUID id, @RequestBody UserDTO dto){
-        dto = service.update(id, dto);
-        return ResponseEntity.ok(dto);
+    public ResponseEntity<UserResponse> update(@PathVariable UUID id, @RequestBody UpdateUserRequest dto){
+        UserResponse userResponse = service.update(dto, id);
+        return ResponseEntity.ok(userResponse);
     }
 
 }

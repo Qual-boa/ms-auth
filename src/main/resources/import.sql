@@ -1,1 +1,1 @@
-INSERT INTO users VALUES ('e3af8953-b40f-4abd-a380-aa232fc3f67c', 'julioaugusto@gmail.com', '$2a$10$bHtmDusd0xrpxTN6xJyN5OvU20jMX466l6M.Gy6dtNpvmwM/O2R3m');
+INSERT INTO users(created_at, updated_at, id, email, name, password, role_enum, user_type_enum) VALUES (NOW(), NOW(), 'e3af8953-b40f-4abd-a380-aa232fc3f67c', 'julioaugusto@gmail.com', 'Julio Augusto', '$2a$10$bHtmDusd0xrpxTN6xJyN5OvU20jMX466l6M.Gy6dtNpvmwM/O2R3m', 'ADMIN', 'COMMON');
