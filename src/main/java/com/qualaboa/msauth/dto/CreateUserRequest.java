@@ -31,6 +31,7 @@ public class CreateUserRequest {
 
     @NotNull(message = "User Type Enum can't be null")
     private UserTypeEnum userTypeEnum;
+
     @NotNull(message = "Role Enum can't be null")
     private RoleEnum roleEnum;
 
