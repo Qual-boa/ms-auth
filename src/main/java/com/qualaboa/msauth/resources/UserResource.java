@@ -41,7 +41,7 @@ public class UserResource {
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserCreateDTO dto){
         if(this.service.loadUserByUsername(dto.getEmail()) != null) return ResponseEntity.badRequest().build();
         UserResponseDTO userResponseDTO = service.save(dto);
