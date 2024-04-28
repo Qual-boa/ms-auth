@@ -1,13 +1,13 @@
 package com.qualaboa.msauth.mappers;
 
-import com.qualaboa.msauth.dto.CreateUserRequest;
-import com.qualaboa.msauth.dto.UpdateUserRequest;
+import com.qualaboa.msauth.dto.UserCreateDTO;
+import com.qualaboa.msauth.dto.UserUpdateDTO;
 import com.qualaboa.msauth.entities.User;
 
 import java.time.LocalDateTime;
 
 public class UserMapper {
-    public static User toEntity(CreateUserRequest userRequest) {
+    public static User toEntity(UserCreateDTO userRequest) {
         if (userRequest == null) return null;
         User user = new User();
         user.setName(userRequest.getName());
@@ -19,7 +19,7 @@ public class UserMapper {
         return user;
     }
 
-    public static User toEntity(UpdateUserRequest userRequest, User entity) {
+    public static User toEntity(UserUpdateDTO userRequest, User entity) {
         if (userRequest == null) return null;
         User user = new User();
         user.setName(userRequest.getName() == null ? entity.getName() : userRequest.getName());

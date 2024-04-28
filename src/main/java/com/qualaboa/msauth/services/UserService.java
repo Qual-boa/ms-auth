@@ -1,8 +1,8 @@
 package com.qualaboa.msauth.services;
 
-import com.qualaboa.msauth.dto.CreateUserRequest;
-import com.qualaboa.msauth.dto.UpdateUserRequest;
-import com.qualaboa.msauth.dto.UserResponse;
+import com.qualaboa.msauth.dto.UserCreateDTO;
+import com.qualaboa.msauth.dto.UserUpdateDTO;
+import com.qualaboa.msauth.dto.UserResponseDTO;
 import com.qualaboa.msauth.entities.User;
 import com.qualaboa.msauth.mappers.UserMapper;
 import com.qualaboa.msauth.repositories.UserRepository;
@@ -22,11 +22,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-public class UserService implements IServiceSave<CreateUserRequest, UserResponse>,
-                                    IServiceFindAll<UserResponse>,
+public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>,
+                                    IServiceFindAll<UserResponseDTO>,
                                     IServiceDelete<UUID>,
-                                    IServiceUpdate<UpdateUserRequest, UserResponse, UUID>,
-                                    IServiceFindById<UserResponse, UUID>,
+                                    IServiceUpdate<UserUpdateDTO, UserResponseDTO, UUID>,
+                                    IServiceFindById<UserResponseDTO, UUID>,
                                     UserDetailsService {
 
     @Autowired
@@ -49,39 +49,39 @@ public class UserService implements IServiceSave<CreateUserRequest, UserResponse
 
     @Override
     @Transactional
-    public Page<UserResponse> findAll(Pageable pageable) {
-        return repository.findAll(pageable).map(UserResponse::new);
+    public Page<UserResponseDTO> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(UserResponseDTO::new);
     }
 
     @Override
     @Transactional
-    public UserResponse findById(UUID uuid) {
+    public UserResponseDTO findById(UUID uuid) {
         User entity = repository.findById(uuid).orElseThrow(()
                 -> new ResourceNotFoundException("Resource not found"));
-        return new UserResponse(entity);
+        return new UserResponseDTO(entity);
     }
 
     @Override
     @Transactional
-    public UserResponse save(CreateUserRequest createUserRequest) {
-        User entity = UserMapper.toEntity(createUserRequest);
+    public UserResponseDTO save(UserCreateDTO userCreateDTO) {
+        User entity = UserMapper.toEntity(userCreateDTO);
 
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         entity.setCreatedAt(LocalDateTime.now());
         entity = repository.save(entity);
-        return new UserResponse(entity);
+        return new UserResponseDTO(entity);
     }
 
     @Override
     @Transactional
-    public UserResponse update(UpdateUserRequest request, UUID uuid) {
+    public UserResponseDTO update(UserUpdateDTO request, UUID uuid) {
         User entity = repository.findById(uuid).orElseThrow(()
                 -> new ResourceNotFoundException("Resource not found"));
         entity = UserMapper.toEntity(request, entity);
 
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         entity = repository.save(entity);
-        return new UserResponse(entity);
+        return new UserResponseDTO(entity);
     }
 
 }

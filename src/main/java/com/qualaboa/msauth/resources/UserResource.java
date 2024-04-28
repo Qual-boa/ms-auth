@@ -1,10 +1,10 @@
 package com.qualaboa.msauth.resources;
 
 import com.qualaboa.msauth.config.TokenService;
-import com.qualaboa.msauth.dto.CreateUserRequest;
+import com.qualaboa.msauth.dto.UserCreateDTO;
 import com.qualaboa.msauth.dto.LoginResponseDTO;
-import com.qualaboa.msauth.dto.UpdateUserRequest;
-import com.qualaboa.msauth.dto.UserResponse;
+import com.qualaboa.msauth.dto.UserUpdateDTO;
+import com.qualaboa.msauth.dto.UserResponseDTO;
 import com.qualaboa.msauth.dto.user.AuthenticationDTO;
 import com.qualaboa.msauth.entities.User;
 import com.qualaboa.msauth.services.UserService;
@@ -42,19 +42,19 @@ public class UserResource {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> save(@RequestBody @Valid CreateUserRequest dto){
+    public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserCreateDTO dto){
         if(this.service.loadUserByUsername(dto.getEmail()) != null) return ResponseEntity.badRequest().build();
-        UserResponse userResponse = service.save(dto);
-        return ResponseEntity.created(URI.create("/users")).body(userResponse);
+        UserResponseDTO userResponseDTO = service.save(dto);
+        return ResponseEntity.created(URI.create("/users")).body(userResponseDTO);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(@PathVariable UUID id){
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable UUID id){
         return ResponseEntity.ok(service.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserResponse>> findAll(Pageable pageable){
+    public ResponseEntity<Page<UserResponseDTO>> findAll(Pageable pageable){
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
@@ -65,9 +65,9 @@ public class UserResource {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> update(@PathVariable UUID id, @RequestBody UpdateUserRequest dto){
-        UserResponse userResponse = service.update(dto, id);
-        return ResponseEntity.ok(userResponse);
+    public ResponseEntity<UserResponseDTO> update(@PathVariable UUID id, @RequestBody UserUpdateDTO dto){
+        UserResponseDTO userResponseDTO = service.update(dto, id);
+        return ResponseEntity.ok(userResponseDTO);
     }
 
 }

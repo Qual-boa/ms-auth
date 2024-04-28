@@ -34,6 +34,6 @@ public class Information {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @OneToOne
     private Establishment establishment;
 }

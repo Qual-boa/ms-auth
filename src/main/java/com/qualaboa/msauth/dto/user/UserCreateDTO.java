@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateUserRequest {
+public class UserCreateDTO {
 
     @Email(message = "Email should be valid")
     private String email;
@@ -34,7 +34,7 @@ public class CreateUserRequest {
     @NotNull(message = "Role Enum can't be null")
     private RoleEnum roleEnum;
 
-    public CreateUserRequest(User entity) {
+    public UserCreateDTO(User entity) {
         this.email = entity.getEmail();
         this.password = entity.getPassword();
         this.userTypeEnum = entity.getUserTypeEnum();

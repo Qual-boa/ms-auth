@@ -14,7 +14,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
+public class UserResponseDTO {
 
     private UUID id;
     private String name;
@@ -23,7 +23,7 @@ public class UserResponse {
     private UserTypeEnum userTypeEnum;
     private RoleEnum roleEnum;
 
-    public UserResponse(User entity) {
+    public UserResponseDTO(User entity) {
         id = entity.getId();
         name = entity.getName();
         email = entity.getEmail();
