@@ -1,28 +1,27 @@
 package com.qualaboa.msauth.entities;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "establishments")
-public class Establishment {
+@Table(name = "relationships")
+public class Relationship {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String fantasyName;
-    private String cnpj;
-    private Integer averageOrderValue;
+    @EmbeddedId
+    private RelationshipEmbeddedId id;
+    private Double rate;
+    private String message;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

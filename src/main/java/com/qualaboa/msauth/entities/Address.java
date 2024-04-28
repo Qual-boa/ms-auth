@@ -14,15 +14,25 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "establishments")
-public class Establishment {
+@Table(name = "address")
+public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String fantasyName;
-    private String cnpj;
-    private Integer averageOrderValue;
+    private String street;
+    private String number;
+    private String postalCode;
+    private String neighborhood;
+    private String complement;
+    private String city;
+    private String state;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    private User user;
+
+    @ManyToOne
+    private Establishment establishment;
 }
