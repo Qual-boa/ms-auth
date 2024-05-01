@@ -1,22 +1,24 @@
 package com.qualaboa.msauth.services;
 
-import com.qualaboa.msauth.dto.establishment.EstablishmentCreateDTO;
-import com.qualaboa.msauth.dto.establishment.EstablishmentResponseDTO;
-import com.qualaboa.msauth.entities.Establishment;
-import com.qualaboa.msauth.entities.enums.CategoryTypeEnum;
-import com.qualaboa.msauth.entities.enums.DrinkEnum;
-import com.qualaboa.msauth.entities.enums.FoodEnum;
-import com.qualaboa.msauth.entities.enums.MusicEnum;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDto;
+import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,6 +30,9 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     @Autowired
     private EstablishmentMapper mapper;
 
+    @Autowired
+    private EntityManager entityManager;
+
     @Override
     @Transactional
     public EstablishmentResponseDTO save(EstablishmentCreateDTO establishmentCreateDTO) {
@@ -38,16 +43,28 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     }
 
     @Transactional(readOnly = true)
-    public List<EstablishmentResponseDTO> findListByFilters(
-            List<CategoryTypeEnum> categories,
-            List<MusicEnum> musics,
-            List<FoodEnum> foods,
-            List<DrinkEnum> drinks){
-        if(!categories.isEmpty()){
-            Specification filterCategorySpecification = Specification.where()
-            for (CategoryTypeEnum category : categories) {
+    public List<EstablishmentResponseDTO> findListByFilters(EstablishmentSearchDto request) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Establishment> criteriaQuery = criteriaBuilder.createQuery(Establishment.class);
+        List<Predicate> predicates = new ArrayList<>();
 
-            }
+        Root<Establishment> establishment = criteriaQuery.from(Establishment.class);
+        
+        if (request.getName() != null) {
+            predicates.add(criteriaBuilder.equal(establishment.get("name"), "%" + request.getName() + "+"));
         }
+        if (!request.getFoods().isEmpty()) {
+            predicates.add(criteriaBuilder.in(establishment.get("foods")));
+        }
+        if (!request.getDrinks().isEmpty()) {
+            predicates.add(criteriaBuilder.in(establishment.get("drinks")));
+        }
+        if (!request.getMusics().isEmpty()) {
+            predicates.add(criteriaBuilder.in(establishment.get("musics")));
+        }
+        
+        TypedQuery<Establishment> query = entityManager.createQuery(criteriaQuery);
+        List<EstablishmentResponseDTO> result = mapper.toDto(query.getResultList());
+        return result;
     }
 }

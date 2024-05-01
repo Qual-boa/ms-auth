@@ -1,7 +1,7 @@
-package com.qualaboa.msauth.entities;
+package com.qualaboa.msauth.dataContract.entities;
 
-import com.qualaboa.msauth.entities.enums.RoleEnum;
-import com.qualaboa.msauth.entities.enums.UserTypeEnum;
+import com.qualaboa.msauth.dataContract.enums.RoleEnum;
+import com.qualaboa.msauth.dataContract.enums.UserTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

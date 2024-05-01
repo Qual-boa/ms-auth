@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.dto.establishment;
+package com.qualaboa.msauth.dataContract.dtos.establishment;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

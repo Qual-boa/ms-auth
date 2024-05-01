@@ -1,6 +1,6 @@
 package com.qualaboa.msauth.repositories;
 
-import com.qualaboa.msauth.entities.Establishment;
+import com.qualaboa.msauth.dataContract.entities.Establishment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

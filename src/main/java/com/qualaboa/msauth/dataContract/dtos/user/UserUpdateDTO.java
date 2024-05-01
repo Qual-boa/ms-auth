@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.dto;
+package com.qualaboa.msauth.dataContract.dtos.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

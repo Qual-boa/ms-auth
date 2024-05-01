@@ -1,9 +1,9 @@
 package com.qualaboa.msauth.services;
 
-import com.qualaboa.msauth.dto.UserCreateDTO;
-import com.qualaboa.msauth.dto.UserUpdateDTO;
-import com.qualaboa.msauth.dto.UserResponseDTO;
-import com.qualaboa.msauth.entities.User;
+import com.qualaboa.msauth.dataContract.dtos.user.UserCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.UserUpdateDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.UserResponseDTO;
+import com.qualaboa.msauth.dataContract.entities.User;
 import com.qualaboa.msauth.mappers.UserMapper;
 import com.qualaboa.msauth.repositories.UserRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;

@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.entities;
+package com.qualaboa.msauth.dataContract.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,21 +14,15 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "events")
-public class Event {
+@Table(name = "establishments")
+public class Establishment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private Boolean alreadyHappened;
-    private LocalDate date;
-    private String title;
-    private String description;
-    private Double price;
+    private String fantasyName;
+    private String cnpj;
+    private Integer averageOrderValue;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @ManyToOne
-    private Establishment owner;
 }
-

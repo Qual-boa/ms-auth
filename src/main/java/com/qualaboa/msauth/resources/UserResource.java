@@ -1,12 +1,12 @@
 package com.qualaboa.msauth.resources;
 
 import com.qualaboa.msauth.config.TokenService;
-import com.qualaboa.msauth.dto.UserCreateDTO;
-import com.qualaboa.msauth.dto.LoginResponseDTO;
-import com.qualaboa.msauth.dto.UserUpdateDTO;
-import com.qualaboa.msauth.dto.UserResponseDTO;
-import com.qualaboa.msauth.dto.user.AuthenticationDTO;
-import com.qualaboa.msauth.entities.User;
+import com.qualaboa.msauth.dataContract.dtos.user.UserCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.LoginResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.UserUpdateDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.UserResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.AuthenticationDTO;
+import com.qualaboa.msauth.dataContract.entities.User;
 import com.qualaboa.msauth.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

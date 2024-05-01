@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.entities.enums;
+package com.qualaboa.msauth.dataContract.enums;
 
 public enum MusicEnum {
     LIVE(1),

@@ -1,9 +1,12 @@
 package com.qualaboa.msauth.mappers;
 
-import com.qualaboa.msauth.dto.establishment.EstablishmentCreateDTO;
-import com.qualaboa.msauth.dto.establishment.EstablishmentResponseDTO;
-import com.qualaboa.msauth.entities.Establishment;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
+import com.qualaboa.msauth.dataContract.entities.Establishment;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class EstablishmentMapper implements IMapper<Establishment> {
@@ -22,12 +25,20 @@ public class EstablishmentMapper implements IMapper<Establishment> {
     @Override
     public Object toDto(Establishment entity) {
         if(entity == null) return null;
-        EstablishmentResponseDTO responseDTO = new EstablishmentResponseDTO(entity.getId(),
+        return new EstablishmentResponseDTO(entity.getId(),
                 entity.getFantasyName(),
                 entity.getCnpj(),
                 entity.getAverageOrderValue(),
                 entity.getCreatedAt(),
                 entity.getUpdatedAt());
-        return responseDTO;
+    }
+    
+    public List<EstablishmentResponseDTO> toDto(List<Establishment> entity) {
+        if(entity == null) return null;
+        List<EstablishmentResponseDTO> dtos = new ArrayList<>();
+        for(Establishment e : entity) {
+            dtos.add((EstablishmentResponseDTO)toDto(e));
+        }
+        return dtos;
     }
 }

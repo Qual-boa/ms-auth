@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.dto.establishment;
+package com.qualaboa.msauth.dataContract.dtos.establishment;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

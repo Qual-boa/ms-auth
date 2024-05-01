@@ -1,8 +1,8 @@
 package com.qualaboa.msauth.mappers;
 
-import com.qualaboa.msauth.dto.UserCreateDTO;
-import com.qualaboa.msauth.dto.UserUpdateDTO;
-import com.qualaboa.msauth.entities.User;
+import com.qualaboa.msauth.dataContract.dtos.user.UserCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.UserUpdateDTO;
+import com.qualaboa.msauth.dataContract.entities.User;
 
 import java.time.LocalDateTime;
 

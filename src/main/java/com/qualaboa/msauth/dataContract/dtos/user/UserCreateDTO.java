@@ -1,8 +1,8 @@
-package com.qualaboa.msauth.dto;
+package com.qualaboa.msauth.dataContract.dtos.user;
 
-import com.qualaboa.msauth.entities.User;
-import com.qualaboa.msauth.entities.enums.RoleEnum;
-import com.qualaboa.msauth.entities.enums.UserTypeEnum;
+import com.qualaboa.msauth.dataContract.entities.User;
+import com.qualaboa.msauth.dataContract.enums.RoleEnum;
+import com.qualaboa.msauth.dataContract.enums.UserTypeEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

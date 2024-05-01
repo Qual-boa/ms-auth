@@ -1,6 +1,6 @@
-package com.qualaboa.msauth.entities;
+package com.qualaboa.msauth.dataContract.entities;
 
-import com.qualaboa.msauth.entities.enums.InteractionTypeEnum;
+import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

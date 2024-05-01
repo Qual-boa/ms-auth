@@ -1,6 +1,6 @@
 package com.qualaboa.msauth.repositories;
 
-import com.qualaboa.msauth.entities.User;
+import com.qualaboa.msauth.dataContract.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;

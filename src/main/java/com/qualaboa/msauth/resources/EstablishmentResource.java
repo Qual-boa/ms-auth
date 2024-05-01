@@ -1,11 +1,8 @@
 package com.qualaboa.msauth.resources;
 
-import com.qualaboa.msauth.dto.establishment.EstablishmentCreateDTO;
-import com.qualaboa.msauth.dto.establishment.EstablishmentResponseDTO;
-import com.qualaboa.msauth.entities.enums.CategoryTypeEnum;
-import com.qualaboa.msauth.entities.enums.DrinkEnum;
-import com.qualaboa.msauth.entities.enums.FoodEnum;
-import com.qualaboa.msauth.entities.enums.MusicEnum;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDto;
 import com.qualaboa.msauth.services.EstablishmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +26,8 @@ public class EstablishmentResource {
     }
 
     @GetMapping("/listbyfilters")
-    public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(
-            @RequestParam List<CategoryTypeEnum> categories,
-            @RequestParam List<MusicEnum> musics,
-            @RequestParam List<FoodEnum> foods,
-            @RequestParam List<DrinkEnum> drinks){
-        List<EstablishmentResponseDTO> responseDTO = service.findListByFilters(categories, musics, foods, drinks);
+    public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(@RequestBody EstablishmentSearchDto request){
+        List<EstablishmentResponseDTO> responseDTO = service.findListByFilters(request);
         if(responseDTO == null) return ResponseEntity.noContent().build();
 
         return ResponseEntity.ok(responseDTO);

@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.dto.user;
+package com.qualaboa.msauth.dataContract.dtos.user;
 
 public record AuthenticationDTO(String login, String password) {
 }

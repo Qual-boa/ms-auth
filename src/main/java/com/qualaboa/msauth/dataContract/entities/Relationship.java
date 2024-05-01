@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.entities;
+package com.qualaboa.msauth.dataContract.entities;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
