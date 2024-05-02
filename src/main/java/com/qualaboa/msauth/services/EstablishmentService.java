@@ -6,6 +6,8 @@ import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDt
 import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
+import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
+import com.qualaboa.msauth.services.interfaces.IServiceFindById;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -20,9 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
-public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO, EstablishmentResponseDTO> {
+public class EstablishmentService implements
+        IServiceSave<EstablishmentCreateDTO, EstablishmentResponseDTO>,
+        IServiceFindById<EstablishmentResponseDTO, UUID> {
 
     @Autowired
     private EstablishmentRepository repository;
@@ -66,5 +71,11 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         TypedQuery<Establishment> query = entityManager.createQuery(criteriaQuery);
         List<EstablishmentResponseDTO> result = mapper.toDto(query.getResultList());
         return result;
+    }
+
+    @Override
+    public EstablishmentResponseDTO findById(UUID uuid) {
+        Establishment entity = repository.findById(uuid).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
+        return (EstablishmentResponseDTO) mapper.toDto(entity);
     }
 }

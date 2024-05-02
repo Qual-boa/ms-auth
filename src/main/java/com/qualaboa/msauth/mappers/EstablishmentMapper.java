@@ -22,6 +22,18 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         return entity;
     }
 
+    public Establishment toEntity(EstablishmentResponseDTO obj) {
+        if(obj == null) return null;
+        Establishment entity = new Establishment();
+        entity.setId(obj.id());
+        entity.setCreatedAt(obj.createdAt());
+        entity.setCnpj(obj.cnpj());
+        entity.setFantasyName(obj.fantasyName());
+        entity.setAverageOrderValue(obj.averageOrderValue());
+        entity.setUpdatedAt(obj.updatedAt());
+        return entity;
+    }
+
     @Override
     public Object toDto(Establishment entity) {
         if(entity == null) return null;

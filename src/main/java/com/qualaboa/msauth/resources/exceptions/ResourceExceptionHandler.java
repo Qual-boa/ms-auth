@@ -1,5 +1,6 @@
 package com.qualaboa.msauth.resources.exceptions;
 
+import com.qualaboa.msauth.services.exceptions.ConflictException;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -20,5 +21,15 @@ public class ResourceExceptionHandler {
         standardError.setTimestamp(LocalDateTime.now());
         standardError.setStatus(HttpStatus.NOT_FOUND.value());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(standardError);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<StandardError> resourceNotFound(ConflictException e, HttpServletRequest request){
+        StandardError standardError = new StandardError();
+        standardError.setError(e.getMessage());
+        standardError.setPath(request.getRequestURI() + " (" + request.getMethod() + ")");
+        standardError.setTimestamp(LocalDateTime.now());
+        standardError.setStatus(HttpStatus.CONFLICT.value());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(standardError);
     }
 }

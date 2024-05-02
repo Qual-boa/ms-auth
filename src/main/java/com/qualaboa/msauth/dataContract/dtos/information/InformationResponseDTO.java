@@ -1,6 +1,7 @@
-package com.qualaboa.msauth.dataContract.entities;
+package com.qualaboa.msauth.dataContract.dtos.information;
 
-import jakarta.persistence.*;
+
+import com.qualaboa.msauth.dataContract.entities.Establishment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,12 +15,9 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "informations")
-public class Information {
+public class InformationResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    private Establishment owner;
     private UUID id;
     private Boolean hasParking;
     private Boolean hasAccessibility;
@@ -33,7 +31,4 @@ public class Information {
     private String telegramUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @OneToOne
-    private Establishment owner;
 }
