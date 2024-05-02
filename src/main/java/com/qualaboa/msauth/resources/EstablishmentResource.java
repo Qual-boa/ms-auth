@@ -25,6 +25,13 @@ public class EstablishmentResource {
         return ResponseEntity.created(URI.create("/establishments")).body(responseDTO);
     }
 
+    @GetMapping
+    public ResponseEntity<List<EstablishmentResponseDTO>> getAll(){
+        List<EstablishmentResponseDTO> responseDTO = service.findAll();
+        if(responseDTO == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @GetMapping("/listbyfilters")
     public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(@RequestBody EstablishmentSearchDto request){
         List<EstablishmentResponseDTO> responseDTO = service.findListByFilters(request);

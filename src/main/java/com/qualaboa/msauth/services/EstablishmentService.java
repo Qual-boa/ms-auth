@@ -7,13 +7,9 @@ import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +26,6 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     @Autowired
     private EstablishmentMapper mapper;
 
-    @Autowired
-    private EntityManager entityManager;
-
     @Override
     @Transactional
     public EstablishmentResponseDTO save(EstablishmentCreateDTO establishmentCreateDTO) {
@@ -43,28 +36,34 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     }
 
     @Transactional(readOnly = true)
-    public List<EstablishmentResponseDTO> findListByFilters(EstablishmentSearchDto request) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Establishment> criteriaQuery = criteriaBuilder.createQuery(Establishment.class);
-        List<Predicate> predicates = new ArrayList<>();
+    public List<EstablishmentResponseDTO> findAll() {
+        List<Establishment> entities = repository.findAll();
+        return mapper.toDto(entities);
+    }
 
-        Root<Establishment> establishment = criteriaQuery.from(Establishment.class);
-        
-        if (request.getName() != null) {
-            predicates.add(criteriaBuilder.equal(establishment.get("name"), "%" + request.getName() + "+"));
-        }
-        if (!request.getFoods().isEmpty()) {
-            predicates.add(criteriaBuilder.in(establishment.get("foods")));
-        }
-        if (!request.getDrinks().isEmpty()) {
-            predicates.add(criteriaBuilder.in(establishment.get("drinks")));
-        }
-        if (!request.getMusics().isEmpty()) {
-            predicates.add(criteriaBuilder.in(establishment.get("musics")));
-        }
-        
-        TypedQuery<Establishment> query = entityManager.createQuery(criteriaQuery);
-        List<EstablishmentResponseDTO> result = mapper.toDto(query.getResultList());
-        return result;
+    @Transactional(readOnly = true)
+    public List<EstablishmentResponseDTO> findListByFilters(EstablishmentSearchDto request) {
+        return mapper.toDto(repository.findAll(CreateFilter(request)));
+    }
+
+    private Specification<Establishment> CreateFilter(EstablishmentSearchDto request) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (request.getName() != null) {
+                predicates.add(criteriaBuilder.like(root.get("fantasyName"), "%" + request.getName() + "%"));
+            }
+            if (!request.getFoods().isEmpty()) {
+                predicates.add(root.get("foods").in(request.getFoods()));
+            }
+            if (!request.getDrinks().isEmpty()) {
+                predicates.add(root.get("drinks").in(request.getDrinks()));
+            }
+            if (!request.getMusics().isEmpty() ) {
+                predicates.add(root.get("musics").in(request.getMusics()));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
     }
 }
