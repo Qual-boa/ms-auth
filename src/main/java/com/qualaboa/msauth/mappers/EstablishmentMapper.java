@@ -2,6 +2,7 @@ package com.qualaboa.msauth.mappers;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
 import com.qualaboa.msauth.dataContract.entities.Establishment;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,16 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         entity.setFantasyName(createDTO.getFantasyName());
         entity.setAverageOrderValue(createDTO.getAverageOrderValue());
         entity.setCnpj(createDTO.getCnpj());
+        return entity;
+    }
+
+    public Establishment fromUpdateToEntity(Object obj, Establishment entity) {
+        if(obj == null) return null;
+        EstablishmentUpdateDTO createDTO = (EstablishmentUpdateDTO) obj;
+        entity.setFantasyName(createDTO.getFantasyName());
+        entity.setCnpj(entity.getCnpj());
+        entity.setAverageOrderValue(entity.getAverageOrderValue());
+        entity.setCreatedAt(entity.getCreatedAt());
         return entity;
     }
 

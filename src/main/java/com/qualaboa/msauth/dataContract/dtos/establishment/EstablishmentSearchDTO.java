@@ -10,9 +10,10 @@ import java.util.List;
 
 @Getter
 @Setter
-public class EstablishmentSearchDto {
+public class EstablishmentSearchDTO {
     private String name;
     private List<MusicEnum> musics;
     private List<FoodEnum> foods;
     private List<DrinkEnum> drinks;
+    private String sortOrder;
 }

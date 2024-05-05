@@ -21,6 +21,7 @@ public class Establishment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String fantasyName;
+    @Column(unique = true)
     private String cnpj;
     private Integer averageOrderValue;
     private LocalDateTime createdAt;
