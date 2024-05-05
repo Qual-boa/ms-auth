@@ -54,6 +54,12 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         List<Establishment> entities = repository.findAll();
         return mapper.toDto(entities);
     }
+    
+    @Transactional(readOnly = true)
+    public EstablishmentResponseDTO findById(UUID id) {
+        Optional<Establishment> entity = repository.findById(id);
+        return entity.map(establishment -> (EstablishmentResponseDTO) mapper.toDto(establishment)).orElse(null);
+    }
 
     @Transactional
     public void delete(UUID id) {
@@ -155,9 +161,7 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         FileWriter file = new FileWriter(fileName);
         file.write(sb.toString());
         file.close();
-        var fileResource = new FileSystemResource(fileName);
-        
-        return fileResource;
+        return new FileSystemResource(fileName);
     }
     
 }

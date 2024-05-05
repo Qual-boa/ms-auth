@@ -35,6 +35,13 @@ public class EstablishmentResource {
         if(responseDTO == null) return ResponseEntity.noContent().build();
         return ResponseEntity.ok(responseDTO);
     }
+    
+    @GetMapping("{id}")
+    public ResponseEntity<EstablishmentResponseDTO> getById(@PathVariable UUID id){
+        EstablishmentResponseDTO responseDTO = service.findById(id);
+        if(responseDTO == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(responseDTO);
+    }
 
     @GetMapping("/listbyfilters")
     public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(@RequestBody EstablishmentSearchDTO request){
