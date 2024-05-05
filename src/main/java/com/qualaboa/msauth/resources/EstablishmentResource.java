@@ -4,7 +4,6 @@ import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDT
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDTO;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
-import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.services.EstablishmentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
