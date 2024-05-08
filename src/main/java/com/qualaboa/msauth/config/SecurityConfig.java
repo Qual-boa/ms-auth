@@ -21,10 +21,6 @@ public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer(){
-        return (web) -> web.ignoring().requestMatchers("/**");
-    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -37,10 +33,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "users/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "users/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/events").hasRole("EMPLOYEE")
-                        .anyRequest().authenticated()
+                        .requestMatchers(HttpMethod.POST, "/establishments/file").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/establishments").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").hasRole("ADMIN")
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
