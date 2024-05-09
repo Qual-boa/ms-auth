@@ -36,9 +36,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/events").hasRole("EMPLOYEE")
-                        .requestMatchers(HttpMethod.POST, "/establishments/file").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/establishments/file").permitAll()
                         .requestMatchers(HttpMethod.GET, "/establishments").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
