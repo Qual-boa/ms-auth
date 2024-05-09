@@ -9,6 +9,7 @@ import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
+import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -116,8 +117,10 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            Path<String> names = root.get("fantasyName");
+
             if (request.getName() != null) {
-                predicates.add(criteriaBuilder.like(root.get("fantasyName"), "%" + request.getName() + "%"));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(names), "%" + request.getName().toLowerCase() + "%"));
             }
             if (!request.getFoods().isEmpty()) {
                 predicates.add(root.get("foods").in(request.getFoods()));
@@ -153,7 +156,7 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         for(EstablishmentResponseDTO establishment : establishmentList) {
             var sj2 = new StringJoiner(";");
             sj2.add(establishment.fantasyName());
-            sj2.add(establishment.cnpj());
+            sj2.add(establishment.cnpj().toString());
             sj2.add(establishment.averageOrderValue().toString());
             sb.append(sj2 + "\n");
         }
