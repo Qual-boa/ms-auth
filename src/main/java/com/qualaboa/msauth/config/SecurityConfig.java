@@ -39,8 +39,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/establishments").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/h2-console").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/h2-console").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
