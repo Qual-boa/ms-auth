@@ -5,6 +5,7 @@ import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponse
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDTO;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
 import com.qualaboa.msauth.dataContract.entities.Establishment;
+import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
@@ -71,15 +72,37 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     @Transactional(readOnly = true)
     public List<EstablishmentResponseDTO> findListByFilters(EstablishmentSearchDTO request) {
         var response = mapper.toDto(repository.findAll(createFilter(request)));
-        if (request.getSortOrder() != null && !request.getSortOrder().isEmpty()) {
+        if (request.getSortOrder() != null) {
             return Arrays.stream(sortByPrice(response, request.getSortOrder())).toList();
         }
         return response;
     }
 
-    private EstablishmentResponseDTO[] sortByPrice(List<EstablishmentResponseDTO> response, String sortOrder) {
+    private Specification<Establishment> createFilter(EstablishmentSearchDTO request) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Path<String> names = root.get("fantasyName");
+
+            if (request.getName() != null) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(names), "%" + request.getName().toLowerCase() + "%"));
+            }
+            if (request.getFoods() != null && !request.getFoods().isEmpty()) {
+                predicates.add(root.get("foods").in(request.getFoods()));
+            }
+            if (request.getDrinks() != null && !request.getDrinks().isEmpty()) {
+                predicates.add(root.get("drinks").in(request.getDrinks()));
+            }
+            if (request.getMusics() != null && !request.getMusics().isEmpty() ) {
+                predicates.add(root.get("musics").in(request.getMusics()));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    private EstablishmentResponseDTO[] sortByPrice(List<EstablishmentResponseDTO> response, SortOrderEnum sortOrder) {
         EstablishmentResponseDTO[] array = new EstablishmentResponseDTO[response.size()];
-        quickSort(response.toArray(array), 0, response.size() - 1, Objects.equals(sortOrder, "ascending"));
+        quickSort(response.toArray(array), 0, response.size() - 1, Objects.equals(sortOrder, SortOrderEnum.ASCENDING));
         return array;
     }
 
@@ -111,29 +134,6 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         response[high] = temp;
 
         return i + 1;
-    }
-
-    private Specification<Establishment> createFilter(EstablishmentSearchDTO request) {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            Path<String> names = root.get("fantasyName");
-
-            if (request.getName() != null) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(names), "%" + request.getName().toLowerCase() + "%"));
-            }
-            if (!request.getFoods().isEmpty()) {
-                predicates.add(root.get("foods").in(request.getFoods()));
-            }
-            if (!request.getDrinks().isEmpty()) {
-                predicates.add(root.get("drinks").in(request.getDrinks()));
-            }
-            if (!request.getMusics().isEmpty() ) {
-                predicates.add(root.get("musics").in(request.getMusics()));
-            }
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
     }
     
     public FileSystemResource fileCsv(EstablishmentSearchDTO request) throws IOException {

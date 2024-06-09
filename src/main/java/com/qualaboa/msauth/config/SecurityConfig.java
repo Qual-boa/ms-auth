@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,7 +19,6 @@ public class SecurityConfig {
 
     @Autowired
     SecurityFilter securityFilter;
-
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -37,7 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/events").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/establishments/file").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/establishments").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/establishments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()

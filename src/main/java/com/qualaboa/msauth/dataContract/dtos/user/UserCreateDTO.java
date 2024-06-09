@@ -28,16 +28,12 @@ public class UserCreateDTO {
     @Size(min = 8, message = "Password requires at least 8 caracters")
     private String password;
 
-    @NotNull(message = "User Type Enum can't be null")
-    private UserTypeEnum userTypeEnum;
-
     @NotNull(message = "Role Enum can't be null")
     private RoleEnum roleEnum;
 
     public UserCreateDTO(User entity) {
         this.email = entity.getEmail();
         this.password = entity.getPassword();
-        this.userTypeEnum = entity.getUserTypeEnum();
         this.roleEnum = entity.getRoleEnum();
     }
 

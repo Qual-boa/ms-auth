@@ -44,7 +44,7 @@ public class EstablishmentResource {
     }
 
     @GetMapping("/listbyfilters")
-    public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(@RequestBody EstablishmentSearchDTO request) throws IOException{
+    public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(EstablishmentSearchDTO request) throws IOException{
         List<EstablishmentResponseDTO> responseDTO = service.findListByFilters(request);
         if(responseDTO == null) return ResponseEntity.noContent().build();
 

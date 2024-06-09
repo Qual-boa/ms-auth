@@ -3,6 +3,7 @@ package com.qualaboa.msauth.dataContract.dtos.establishment;
 import com.qualaboa.msauth.dataContract.enums.DrinkEnum;
 import com.qualaboa.msauth.dataContract.enums.FoodEnum;
 import com.qualaboa.msauth.dataContract.enums.MusicEnum;
+import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,5 +16,5 @@ public class EstablishmentSearchDTO {
     private List<MusicEnum> musics;
     private List<FoodEnum> foods;
     private List<DrinkEnum> drinks;
-    private String sortOrder;
+    private SortOrderEnum sortOrder;
 }
