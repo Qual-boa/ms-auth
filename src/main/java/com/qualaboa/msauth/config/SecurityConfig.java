@@ -41,6 +41,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/establishments").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/relationship/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/relationship/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()

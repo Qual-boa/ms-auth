@@ -64,7 +64,7 @@ public class EstablishmentMapper implements IMapper<Establishment> {
             relationshipDto.setUserId(relationship.getId().getUserId());
             relationshipDto.setInteractionType(relationship.getId().getInteractionType());
             relationshipDto.setRate(relationship.getRate() == null ? 0 : relationship.getRate());
-            relationshipDto.setMessage(relationshipDto.getMessage() == null ? "" : relationshipDto.getMessage());
+            relationshipDto.setMessage(relationship.getMessage() == null ? "" : relationship.getMessage());
             relationshipsDto.add(relationshipDto);
         }
         return relationshipsDto;

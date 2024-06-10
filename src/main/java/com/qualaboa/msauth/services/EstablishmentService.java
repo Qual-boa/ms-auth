@@ -6,6 +6,7 @@ import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.CategoryRepository;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
+import com.qualaboa.msauth.repositories.RelationshipRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
 import jakarta.persistence.criteria.Join;
@@ -32,6 +33,8 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     private EstablishmentRepository repository;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private RelationshipRepository relationshipRepository;
 
     @Autowired
     private EstablishmentMapper mapper;
@@ -76,11 +79,10 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         relationship.setId(id);
         if(request.getRate() != null) relationship.setRate(request.getRate());
         if(request.getMessage() != null) relationship.setMessage(request.getMessage());
+        relationshipRepository.save(relationship);
         entity.getRelationships().add(relationship);
-        repository.save(entity);
         return (EstablishmentResponseDTO) mapper.toDto(entity);
-    } 
-    
+    }
     
     @Transactional
     public EstablishmentResponseDTO update(EstablishmentUpdateDTO establishmentUpdateDTO) {
