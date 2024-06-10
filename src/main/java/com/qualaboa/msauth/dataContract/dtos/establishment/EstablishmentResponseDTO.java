@@ -17,5 +17,6 @@ public class EstablishmentResponseDTO {
     String cnpj;
     Integer averageOrderValue;
     List<CategoryResponseDTO> categories;
+    List<RelationshipResponseDTO> relationships;
 }
 

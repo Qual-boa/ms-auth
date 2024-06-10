@@ -30,4 +30,6 @@ public class Establishment {
     private LocalDateTime updatedAt;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Category> categories = new ArrayList<>();
+    @ManyToMany
+    private List<Relationship> relationships = new ArrayList<>();
 }

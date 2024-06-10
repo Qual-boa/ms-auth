@@ -1,11 +1,9 @@
 package com.qualaboa.msauth.mappers;
 
-import com.qualaboa.msauth.dataContract.dtos.establishment.CategoryResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.*;
 import com.qualaboa.msauth.dataContract.entities.Category;
 import com.qualaboa.msauth.dataContract.entities.Establishment;
+import com.qualaboa.msauth.dataContract.entities.Relationship;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -43,6 +41,7 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         dto.setAverageOrderValue(entity.getAverageOrderValue());
         dto.setId(entity.getId());
         dto.setCategories(entity.getCategories() == null ? new ArrayList<>() : categoryToDTO(entity.getCategories()));
+        dto.setRelationships(entity.getRelationships() == null ? new ArrayList<>() : relationshipToDTO(entity.getRelationships()));
         return dto;
     }
     
@@ -56,6 +55,19 @@ public class EstablishmentMapper implements IMapper<Establishment> {
             categoriesDto.add(categoryDto);
         }
         return categoriesDto;
+    }
+    
+    public List<RelationshipResponseDTO> relationshipToDTO(List<Relationship> relationships) {
+        List<RelationshipResponseDTO> relationshipsDto = new ArrayList<>();
+        for(Relationship relationship : relationships) {
+            RelationshipResponseDTO relationshipDto = new RelationshipResponseDTO();
+            relationshipDto.setUserId(relationship.getId().getUserId());
+            relationshipDto.setInteractionType(relationship.getId().getInteractionType());
+            relationshipDto.setRate(relationship.getRate() == null ? 0 : relationship.getRate());
+            relationshipDto.setMessage(relationshipDto.getMessage() == null ? "" : relationshipDto.getMessage());
+            relationshipsDto.add(relationshipDto);
+        }
+        return relationshipsDto;
     }
     
     public List<EstablishmentResponseDTO> toDto(List<Establishment> entity) {

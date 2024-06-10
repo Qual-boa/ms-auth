@@ -1,9 +1,7 @@
 package com.qualaboa.msauth.services;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.*;
-import com.qualaboa.msauth.dataContract.entities.Category;
-import com.qualaboa.msauth.dataContract.entities.CategoryEmbeddedId;
-import com.qualaboa.msauth.dataContract.entities.Establishment;
+import com.qualaboa.msauth.dataContract.entities.*;
 import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.CategoryRepository;
@@ -67,6 +65,24 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     }
     
     @Transactional
+    public EstablishmentResponseDTO saveRelationship(EstablishmentRelationshipDTO request){
+        Establishment entity = repository.findById(request.getEstablishmentId()).orElseThrow(()
+                -> new ResourceNotFoundException("Establishment not found"));
+        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
+        id.setEstablishmentId(request.getEstablishmentId());
+        id.setUserId(request.getUserId());
+        id.setInteractionType(request.getInteractionType());
+        Relationship relationship = new Relationship();
+        relationship.setId(id);
+        if(request.getRate() != null) relationship.setRate(request.getRate());
+        if(request.getMessage() != null) relationship.setMessage(request.getMessage());
+        entity.getRelationships().add(relationship);
+        repository.save(entity);
+        return (EstablishmentResponseDTO) mapper.toDto(entity);
+    } 
+    
+    
+    @Transactional
     public EstablishmentResponseDTO update(EstablishmentUpdateDTO establishmentUpdateDTO) {
         Establishment entity = repository.findById(establishmentUpdateDTO.getId()).orElseThrow(()
                 -> new ResourceNotFoundException("Resource not found"));
@@ -113,14 +129,12 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
             }
 
             if (request.getCategories() != null && !request.getCategories().isEmpty()) {
-                // Adiciona um join apenas uma vez fora do loop
                 Join<Establishment, Category> join = root.join("categories");
 
                 for (CategoryEmbeddedId id : request.getCategories()) {
                     Predicate predicateCategoryType = criteriaBuilder.equal(join.get("id").get("categoryType"), id.getCategoryType());
                     Predicate predicateCategory = criteriaBuilder.equal(join.get("id").get("category"), id.getCategory());
 
-                    // Combina os dois predicados com um AND
                     Predicate categoryPredicate = criteriaBuilder.and(predicateCategoryType, predicateCategory);
                     predicates.add(categoryPredicate);
                 }

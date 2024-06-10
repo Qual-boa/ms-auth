@@ -82,4 +82,10 @@ public class EstablishmentResource {
         EstablishmentResponseDTO responseDTO = service.saveCategories(dto);
         return ResponseEntity.ok(responseDTO);
     }
+    
+    @PutMapping("/relationship")
+    public ResponseEntity<EstablishmentResponseDTO> createRelationship(@RequestBody EstablishmentRelationshipDTO dto){
+        EstablishmentResponseDTO responseDTO = service.saveRelationship(dto);
+        return ResponseEntity.ok(responseDTO);
+    }
 }

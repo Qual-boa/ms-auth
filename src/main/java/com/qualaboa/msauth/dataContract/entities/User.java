@@ -32,12 +32,10 @@ public class User implements UserDetails {
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @Enumerated(EnumType.STRING)
-    private UserTypeEnum userTypeEnum;
-
     @Enumerated(EnumType.STRING)
     private RoleEnum roleEnum;
+    @OneToMany
+    private List<Relationship> relationships;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
