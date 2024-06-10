@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CategoryEmbeddedId  implements Serializable {
-    private UUID establishmentId;
-    private CategoryTypeEnum categoryType;
+public class CategoryEmbeddedId implements Serializable {
+    private Integer categoryType;
+    private Integer category;
 }

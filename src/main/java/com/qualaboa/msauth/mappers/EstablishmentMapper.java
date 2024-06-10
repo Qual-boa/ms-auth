@@ -1,8 +1,10 @@
 package com.qualaboa.msauth.mappers;
 
+import com.qualaboa.msauth.dataContract.dtos.establishment.CategoryResponseDTO;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
+import com.qualaboa.msauth.dataContract.entities.Category;
 import com.qualaboa.msauth.dataContract.entities.Establishment;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +20,6 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         Establishment entity = new Establishment();
         EstablishmentCreateDTO createDTO = (EstablishmentCreateDTO) obj;
         entity.setFantasyName(createDTO.getFantasyName());
-        entity.setAverageOrderValue(createDTO.getAverageOrderValue());
         entity.setCnpj(createDTO.getCnpj());
         return entity;
     }
@@ -36,12 +37,25 @@ public class EstablishmentMapper implements IMapper<Establishment> {
     @Override
     public Object toDto(Establishment entity) {
         if(entity == null) return null;
-        return new EstablishmentResponseDTO(entity.getId(),
-                entity.getFantasyName(),
-                entity.getCnpj(),
-                entity.getAverageOrderValue(),
-                entity.getCreatedAt(),
-                entity.getUpdatedAt());
+        EstablishmentResponseDTO dto = new EstablishmentResponseDTO();
+        dto.setFantasyName(entity.getFantasyName());
+        dto.setCnpj(entity.getCnpj());
+        dto.setAverageOrderValue(entity.getAverageOrderValue());
+        dto.setId(entity.getId());
+        dto.setCategories(entity.getCategories() == null ? new ArrayList<>() : categoryToDTO(entity.getCategories()));
+        return dto;
+    }
+    
+    public List<CategoryResponseDTO> categoryToDTO(List<Category> categories) {
+        List<CategoryResponseDTO> categoriesDto = new ArrayList<>();
+        for(Category category : categories) {
+            CategoryResponseDTO categoryDto = new CategoryResponseDTO();
+            categoryDto.setCategory(category.getId().getCategory());
+            categoryDto.setCategoryType(category.getId().getCategoryType());
+            categoryDto.setName(category.getName());
+            categoriesDto.add(categoryDto);
+        }
+        return categoriesDto;
     }
     
     public List<EstablishmentResponseDTO> toDto(List<Establishment> entity) {

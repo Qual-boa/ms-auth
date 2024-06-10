@@ -22,7 +22,7 @@ import java.util.UUID;
 @Table(name = "categories")
 public class Category {
     @Id
-    private int id;
+    private CategoryEmbeddedId id;
     private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

@@ -28,6 +28,6 @@ public class Establishment {
     private Integer averageOrderValue;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Category> categories = new ArrayList<>();
 }

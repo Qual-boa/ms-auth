@@ -1,11 +1,9 @@
 package com.qualaboa.msauth.resources;
 
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.*;
 import com.qualaboa.msauth.services.EstablishmentService;
 import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -44,7 +42,7 @@ public class EstablishmentResource {
     }
 
     @GetMapping("/listbyfilters")
-    public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(EstablishmentSearchDTO request) throws IOException{
+    public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(@RequestBody EstablishmentSearchDTO request) throws IOException{
         List<EstablishmentResponseDTO> responseDTO = service.findListByFilters(request);
         if(responseDTO == null) return ResponseEntity.noContent().build();
 
@@ -77,5 +75,11 @@ public class EstablishmentResource {
                 .build();
         httpHeaders.setContentDisposition(disposition);
         return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);
+    }
+    
+    @PutMapping("/categories")
+    public ResponseEntity<EstablishmentResponseDTO> createCategory(@RequestBody EstablishmentCategoryDTO dto) throws BadRequestException {
+        EstablishmentResponseDTO responseDTO = service.saveCategories(dto);
+        return ResponseEntity.ok(responseDTO);
     }
 }
