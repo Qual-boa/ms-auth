@@ -1,5 +1,6 @@
 package com.qualaboa.msauth.dataContract.dtos.establishment;
 
+import com.qualaboa.msauth.dataContract.dtos.information.InformationResponseDTO;
 import com.qualaboa.msauth.dataContract.entities.Category;
 import lombok.*;
 
@@ -18,5 +19,6 @@ public class EstablishmentResponseDTO {
     Integer averageOrderValue;
     List<CategoryResponseDTO> categories;
     List<RelationshipResponseDTO> relationships;
+    InformationResponseDTO information;
 }
 

@@ -1,9 +1,11 @@
 package com.qualaboa.msauth.mappers;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.*;
+import com.qualaboa.msauth.dataContract.dtos.information.InformationResponseDTO;
 import com.qualaboa.msauth.dataContract.entities.Category;
 import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.dataContract.entities.Relationship;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,6 +13,9 @@ import java.util.List;
 
 @Component
 public class EstablishmentMapper implements IMapper<Establishment> {
+
+    @Autowired
+    InformationMapper informationMapper;
 
     @Override
     public Establishment toEntity(Object obj) {
@@ -42,6 +47,7 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         dto.setId(entity.getId());
         dto.setCategories(entity.getCategories() == null ? new ArrayList<>() : categoryToDTO(entity.getCategories()));
         dto.setRelationships(entity.getRelationships() == null ? new ArrayList<>() : relationshipToDTO(entity.getRelationships()));
+        dto.setInformation(entity.getInformation() == null ? null : (InformationResponseDTO) informationMapper.toDto(entity.getInformation()));
         return dto;
     }
     

@@ -33,7 +33,5 @@ public class Information {
     private String telegramUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @OneToOne
-    private Establishment owner;
+    private UUID establishmentId;
 }

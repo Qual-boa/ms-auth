@@ -32,4 +32,6 @@ public class Establishment {
     private List<Category> categories = new ArrayList<>();
     @ManyToMany
     private List<Relationship> relationships = new ArrayList<>();
+    @OneToOne
+    private Information information;
 }

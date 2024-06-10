@@ -7,13 +7,16 @@ import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.dataContract.entities.Information;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.mappers.InformationMapper;
+import com.qualaboa.msauth.repositories.EstablishmentRepository;
 import com.qualaboa.msauth.repositories.InformationRepository;
 import com.qualaboa.msauth.services.exceptions.ConflictException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,7 +26,7 @@ public class InformationService {
     private InformationRepository repository;
 
     @Autowired
-    private EstablishmentService establishmentService;
+    private EstablishmentRepository establishmentRepository;
 
     @Autowired
     private EstablishmentMapper establishmentMapper;
@@ -31,23 +34,20 @@ public class InformationService {
     @Autowired
     private InformationMapper infoMapper;
 
-    public InformationResponseDTO save(InformationCreateDTO informationCreateDTO, UUID establishmentId) {
+    public EstablishmentResponseDTO save(InformationCreateDTO informationCreateDTO, UUID establishmentId) {
         if(existsInfo(establishmentId)) throw new ConflictException("Information already exists");
-        EstablishmentResponseDTO establishmentResponseDTO = establishmentService.findById(establishmentId);
-        Establishment establishmentEntity = establishmentMapper.toEntity(establishmentResponseDTO);
+        Optional<Establishment> establishmentEntity = establishmentRepository.findById(establishmentId);
+        if(establishmentEntity.isEmpty()) throw new IllegalArgumentException("Establishment not found");
 
         LocalTime closeAt = LocalTime.of(informationCreateDTO.getCloseAt().getHour(), informationCreateDTO.getCloseAt().getMinute());
         LocalTime openAt = LocalTime.of(informationCreateDTO.getOpenAt().getHour(), informationCreateDTO.getOpenAt().getMinute());
 
-        Information entity = infoMapper.toEntity(establishmentEntity, informationCreateDTO);
-        entity.setOpenAt(openAt);
-        entity.setCloseAt(closeAt);
-        entity.setCreatedAt(LocalDateTime.now());
-        entity = repository.save(entity);
-        return (InformationResponseDTO) infoMapper.toDto(entity);
+        Information entity = infoMapper.toEntity(informationCreateDTO);
+        establishmentEntity.get().setInformation(entity);
+        return (EstablishmentResponseDTO) establishmentMapper.toDto(establishmentRepository.save(establishmentEntity.get()));
     }
 
     private boolean existsInfo(UUID establishmentId){
-        return repository.existsByOwnerId(establishmentId);
+        return repository.existsByEstablishmentId(establishmentId);
     }
 }
