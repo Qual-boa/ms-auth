@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,7 +19,6 @@ public class SecurityConfig {
 
     @Autowired
     SecurityFilter securityFilter;
-
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -36,9 +34,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/events").hasRole("EMPLOYEE")
-                        .requestMatchers(HttpMethod.POST, "/establishments/file").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/establishments").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/relationship/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/relationship/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/informations/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/informations/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/access/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()
                 )

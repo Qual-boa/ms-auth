@@ -1,11 +1,9 @@
 package com.qualaboa.msauth.resources;
 
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
+import com.qualaboa.msauth.dataContract.dtos.establishment.*;
 import com.qualaboa.msauth.services.EstablishmentService;
 import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -43,10 +41,10 @@ public class EstablishmentResource {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/listbyfilters")
+    @PostMapping("/listbyfilters")
     public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(@RequestBody EstablishmentSearchDTO request) throws IOException{
         List<EstablishmentResponseDTO> responseDTO = service.findListByFilters(request);
-        if(responseDTO == null) return ResponseEntity.noContent().build();
+        if(responseDTO == null || responseDTO.isEmpty()) return ResponseEntity.noContent().build();
 
         return ResponseEntity.ok(responseDTO);
     }
@@ -77,5 +75,17 @@ public class EstablishmentResource {
                 .build();
         httpHeaders.setContentDisposition(disposition);
         return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);
+    }
+    
+    @PutMapping("/categories")
+    public ResponseEntity<EstablishmentResponseDTO> createCategory(@RequestBody EstablishmentCategoryDTO dto) throws BadRequestException {
+        EstablishmentResponseDTO responseDTO = service.saveCategories(dto);
+        return ResponseEntity.ok(responseDTO);
+    }
+    
+    @PutMapping("/relationship")
+    public ResponseEntity<EstablishmentResponseDTO> createRelationship(@RequestBody EstablishmentRelationshipDTO dto){
+        EstablishmentResponseDTO responseDTO = service.saveRelationship(dto);
+        return ResponseEntity.ok(responseDTO);
     }
 }

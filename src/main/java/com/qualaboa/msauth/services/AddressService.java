@@ -55,7 +55,7 @@ public class AddressService {
     public AddressResponseDTO saveWithEstablishment(AddressRequestDTO createDTO, UUID establishmentId) {
         EstablishmentResponseDTO establishmentResponseDTO = establishmentService.findById(establishmentId);
         Establishment establishmentEntity = new Establishment();
-        establishmentEntity.setId(establishmentResponseDTO.id());
+        establishmentEntity.setId(establishmentResponseDTO.getId());
         Address entity = mapper.toEntity(createDTO);
         entity.setEstablishment(establishmentEntity);
         entity.setCreatedAt(LocalDateTime.now());
@@ -67,7 +67,7 @@ public class AddressService {
     public List<AddressResponseDTO> findByEstablishment(UUID establishmentId){
         EstablishmentResponseDTO responseDTO = establishmentService.findById(establishmentId);
         Establishment establishment = new Establishment();
-        establishment.setId(responseDTO.id());
+        establishment.setId(responseDTO.getId());
         List<Address> list = repository.findByEstablishment(establishment);
         return list.stream().map(x -> (AddressResponseDTO) mapper.toDto(x)).toList();
     }
@@ -95,7 +95,7 @@ public class AddressService {
         if(!repository.existsByEstablishmentId(establishmentId)) throw new ResourceNotFoundException("Resource Not Found");
         EstablishmentResponseDTO responseDTO = establishmentService.findById(establishmentId);
         Establishment establishment = new Establishment();
-        establishment.setId(responseDTO.id());
+        establishment.setId(responseDTO.getId());
         repository.deleteAllByEstablishment(establishment);
     }
 

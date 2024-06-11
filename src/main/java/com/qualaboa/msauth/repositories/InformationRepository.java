@@ -9,5 +9,5 @@ import java.util.UUID;
 @Repository
 public interface InformationRepository extends JpaRepository<Information, UUID> {
 
-    boolean existsByOwnerId(UUID establishmentId);
+    boolean existsByEstablishmentId(UUID establishmentId);
 }

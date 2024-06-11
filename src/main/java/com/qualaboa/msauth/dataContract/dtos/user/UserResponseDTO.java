@@ -27,7 +27,6 @@ public class UserResponseDTO {
         id = entity.getId();
         name = entity.getName();
         email = entity.getEmail();
-        userTypeEnum = entity.getUserTypeEnum();
         roleEnum = entity.getRoleEnum();
     }
 }

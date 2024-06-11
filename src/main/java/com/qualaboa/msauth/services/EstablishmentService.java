@@ -1,18 +1,22 @@
 package com.qualaboa.msauth.services;
 
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentCreateDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentSearchDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentUpdateDTO;
-import com.qualaboa.msauth.dataContract.entities.Establishment;
+import com.qualaboa.msauth.dataContract.dtos.establishment.*;
+import com.qualaboa.msauth.dataContract.entities.*;
+import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
+import com.qualaboa.msauth.repositories.AccessCounterRepository;
+import com.qualaboa.msauth.repositories.CategoryRepository;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
+import com.qualaboa.msauth.repositories.RelationshipRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +32,14 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
 
     @Autowired
     private EstablishmentRepository repository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private RelationshipRepository relationshipRepository;
+    @Autowired
+    private AccessCounterRepository accessCounterRepository;
+    @Autowired
+    private CategoryService categoryService;
 
     @Autowired
     private EstablishmentMapper mapper;
@@ -38,6 +50,42 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         Establishment entity = mapper.toEntity(establishmentCreateDTO);
         entity.setCreatedAt(LocalDateTime.now());
         entity = repository.save(entity);
+        return (EstablishmentResponseDTO) mapper.toDto(entity);
+    }
+
+    @Transactional
+    public EstablishmentResponseDTO saveCategories(EstablishmentCategoryDTO request) throws BadRequestException {
+        Establishment entity = repository.findById(request.getEstablishmentId()).orElseThrow(()
+                -> new ResourceNotFoundException("Establishment not found"));
+        if(request.getCategories() == null || request.getCategories().isEmpty()) throw new BadRequestException();
+        
+        List<Category> categories = new ArrayList<>();
+        for(CategoryEmbeddedId id : request.getCategories()) {
+            Category categoryExample = new Category();
+            categoryExample.setId(id);
+            List<Category> categoryFound = categoryRepository.findAll(Example.of(categoryExample));
+            categories.addAll(categoryFound);
+        }
+        entity.setUpdatedAt(LocalDateTime.now());
+        entity.setCategories(categories);
+        repository.save(entity);
+        return (EstablishmentResponseDTO) mapper.toDto(entity);
+    }
+    
+    @Transactional
+    public EstablishmentResponseDTO saveRelationship(EstablishmentRelationshipDTO request){
+        Establishment entity = repository.findById(request.getEstablishmentId()).orElseThrow(()
+                -> new ResourceNotFoundException("Establishment not found"));
+        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
+        id.setEstablishmentId(request.getEstablishmentId());
+        id.setUserId(request.getUserId());
+        id.setInteractionType(request.getInteractionType());
+        Relationship relationship = new Relationship();
+        relationship.setId(id);
+        if(request.getRate() != null) relationship.setRate(request.getRate());
+        if(request.getMessage() != null) relationship.setMessage(request.getMessage());
+        relationshipRepository.save(relationship);
+        entity.getRelationships().add(relationship);
         return (EstablishmentResponseDTO) mapper.toDto(entity);
     }
     
@@ -56,10 +104,16 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         return mapper.toDto(entities);
     }
     
-    @Transactional(readOnly = true)
+    @Transactional
     public EstablishmentResponseDTO findById(UUID id) {
-        Optional<Establishment> entity = repository.findById(id);
-        return entity.map(establishment -> (EstablishmentResponseDTO) mapper.toDto(establishment)).orElse(null);
+        Establishment entity = repository.findById(id).orElseThrow(() 
+                -> new ResourceNotFoundException("Establishment not found"));
+        AccessCounter newAccess = new AccessCounter();
+        newAccess.setAccessedAt(LocalDateTime.now());
+        newAccess.setEstablishmentId(id);
+        entity.getAccess().add(newAccess);
+        accessCounterRepository.save(newAccess);
+        return (EstablishmentResponseDTO) mapper.toDto(entity);
     }
 
     @Transactional
@@ -67,19 +121,46 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         repository.delete(repository.findById(id).orElseThrow(()
                 -> new ResourceNotFoundException("Resource not found")));
     }
-
-    @Transactional(readOnly = true)
+    
+    @Transactional
     public List<EstablishmentResponseDTO> findListByFilters(EstablishmentSearchDTO request) {
         var response = mapper.toDto(repository.findAll(createFilter(request)));
-        if (request.getSortOrder() != null && !request.getSortOrder().isEmpty()) {
+        if (request.getSortOrder() != null) {
             return Arrays.stream(sortByPrice(response, request.getSortOrder())).toList();
         }
         return response;
     }
 
-    private EstablishmentResponseDTO[] sortByPrice(List<EstablishmentResponseDTO> response, String sortOrder) {
+    private Specification<Establishment> createFilter(EstablishmentSearchDTO request) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Path<String> names = root.get("fantasyName");
+
+            if (request.getName() != null) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(names), "%" + request.getName().toLowerCase() + "%"));
+            }
+
+            if (request.getCategories() != null && !request.getCategories().isEmpty()) {
+                Join<Establishment, Category> join = root.join("categories");
+
+                for (CategoryEmbeddedId id : request.getCategories()) {
+                    categoryService.updateCategory(id);
+                    Predicate predicateCategoryType = criteriaBuilder.equal(join.get("id").get("categoryType"), id.getCategoryType());
+                    Predicate predicateCategory = criteriaBuilder.equal(join.get("id").get("category"), id.getCategory());
+
+                    Predicate categoryPredicate = criteriaBuilder.and(predicateCategoryType, predicateCategory);
+                    predicates.add(categoryPredicate);
+                }
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+
+    private EstablishmentResponseDTO[] sortByPrice(List<EstablishmentResponseDTO> response, SortOrderEnum sortOrder) {
         EstablishmentResponseDTO[] array = new EstablishmentResponseDTO[response.size()];
-        quickSort(response.toArray(array), 0, response.size() - 1, Objects.equals(sortOrder, "ascending"));
+        quickSort(response.toArray(array), 0, response.size() - 1, Objects.equals(sortOrder, SortOrderEnum.ASCENDING));
         return array;
     }
 
@@ -93,11 +174,11 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     }
 
     private int partition(EstablishmentResponseDTO[] response, int low, int high, boolean ascending) {
-        int pivot = response[high].averageOrderValue();
+        int pivot = response[high].getAverageOrderValue();
         int i = (low - 1);
 
         for (int j = low; j < high; j++) {
-            if (ascending ? response[j].averageOrderValue() <= pivot : response[j].averageOrderValue() >= pivot) {
+            if (ascending ? response[j].getAverageOrderValue() <= pivot : response[j].getAverageOrderValue() >= pivot) {
                 i++;
 
                 EstablishmentResponseDTO temp = response[i];
@@ -111,29 +192,6 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         response[high] = temp;
 
         return i + 1;
-    }
-
-    private Specification<Establishment> createFilter(EstablishmentSearchDTO request) {
-        return (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            Path<String> names = root.get("fantasyName");
-
-            if (request.getName() != null) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(names), "%" + request.getName().toLowerCase() + "%"));
-            }
-            if (!request.getFoods().isEmpty()) {
-                predicates.add(root.get("foods").in(request.getFoods()));
-            }
-            if (!request.getDrinks().isEmpty()) {
-                predicates.add(root.get("drinks").in(request.getDrinks()));
-            }
-            if (!request.getMusics().isEmpty() ) {
-                predicates.add(root.get("musics").in(request.getMusics()));
-            }
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
     }
     
     public FileSystemResource fileCsv(EstablishmentSearchDTO request) throws IOException {
@@ -155,9 +213,9 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
 
         for(EstablishmentResponseDTO establishment : establishmentList) {
             var sj2 = new StringJoiner(";");
-            sj2.add(establishment.fantasyName());
-            sj2.add(establishment.cnpj().toString());
-            sj2.add(establishment.averageOrderValue().toString());
+            sj2.add(establishment.getFantasyName());
+            sj2.add(establishment.getCnpj().toString());
+            sj2.add(establishment.getAverageOrderValue().toString());
             sb.append(sj2 + "\n");
         }
 
@@ -166,5 +224,4 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         file.close();
         return new FileSystemResource(fileName);
     }
-    
 }
