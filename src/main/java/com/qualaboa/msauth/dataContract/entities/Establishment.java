@@ -30,8 +30,10 @@ public class Establishment {
     private LocalDateTime updatedAt;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Category> categories = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Relationship> relationships = new ArrayList<>();
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Information information;
+    @OneToMany
+    private List<AccessCounter> access = new ArrayList<>();
 }

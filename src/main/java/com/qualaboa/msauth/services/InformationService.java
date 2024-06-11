@@ -43,7 +43,7 @@ public class InformationService {
         LocalTime openAt = LocalTime.of(informationCreateDTO.getOpenAt().getHour(), informationCreateDTO.getOpenAt().getMinute());
 
         Information entity = infoMapper.toEntity(informationCreateDTO);
-        establishmentEntity.get().setInformation(entity);
+        establishmentEntity.get().setInformation(repository.save(entity));
         return (EstablishmentResponseDTO) establishmentMapper.toDto(establishmentRepository.save(establishmentEntity.get()));
     }
 
