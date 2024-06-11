@@ -3,10 +3,7 @@ package com.qualaboa.msauth.dataContract.entities;
 
 import com.qualaboa.msauth.dataContract.enums.CategoryTypeEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.ListType;
 
@@ -18,12 +15,14 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Entity
 @Table(name = "categories")
 public class Category {
     @Id
     private CategoryEmbeddedId id;
     private String name;
+    private Integer countSearches;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

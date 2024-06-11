@@ -51,14 +51,21 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         return dto;
     }
     
+    public CategoryResponseDTO categoryToDTO(Category category) {
+        if(category == null) return null;
+        CategoryResponseDTO categoryDto = new CategoryResponseDTO();
+        categoryDto.setCategory(category.getId().getCategory());
+        categoryDto.setCategoryType(category.getId().getCategoryType());
+        categoryDto.setName(category.getName());
+        categoryDto.setSearchesCount(category.getCountSearches());
+        return categoryDto;
+    }
+
     public List<CategoryResponseDTO> categoryToDTO(List<Category> categories) {
+        if(categories == null) return null;
         List<CategoryResponseDTO> categoriesDto = new ArrayList<>();
         for(Category category : categories) {
-            CategoryResponseDTO categoryDto = new CategoryResponseDTO();
-            categoryDto.setCategory(category.getId().getCategory());
-            categoryDto.setCategoryType(category.getId().getCategoryType());
-            categoryDto.setName(category.getName());
-            categoriesDto.add(categoryDto);
+            categoriesDto.add(categoryToDTO(category));
         }
         return categoriesDto;
     }

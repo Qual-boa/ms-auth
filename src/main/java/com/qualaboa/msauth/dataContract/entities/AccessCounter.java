@@ -20,4 +20,5 @@ public class AccessCounter {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private LocalDateTime accessedAt;
+    private UUID establishmentId;
 }

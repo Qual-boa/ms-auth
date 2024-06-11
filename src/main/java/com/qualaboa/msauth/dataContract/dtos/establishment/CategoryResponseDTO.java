@@ -11,4 +11,5 @@ public class CategoryResponseDTO {
     private Integer categoryType;
     private Integer category;
     private String name;
+    private Integer searchesCount;
 }
