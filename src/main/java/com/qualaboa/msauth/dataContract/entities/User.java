@@ -32,19 +32,15 @@ public class User implements UserDetails {
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    @Enumerated(EnumType.STRING)
-    private UserTypeEnum userTypeEnum;
-
     @Enumerated(EnumType.STRING)
     private RoleEnum roleEnum;
+    @OneToMany
+    private List<Relationship> relationships;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.roleEnum == RoleEnum.ADMIN) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
-        } else if(this.roleEnum == RoleEnum.EMPLOYEE) {
-            return List.of(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_ADMIN"));
         } else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }

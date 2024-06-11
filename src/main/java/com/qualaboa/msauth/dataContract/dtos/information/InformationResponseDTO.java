@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class InformationResponseDTO {
 
-    private Establishment owner;
     private UUID id;
     private Boolean hasParking;
     private Boolean hasAccessibility;
@@ -29,6 +28,4 @@ public class InformationResponseDTO {
     private String facebookUrl;
     private String instagramUrl;
     private String telegramUrl;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

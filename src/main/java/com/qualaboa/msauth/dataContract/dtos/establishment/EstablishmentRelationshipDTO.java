@@ -1,24 +1,19 @@
-package com.qualaboa.msauth.dataContract.entities;
+package com.qualaboa.msauth.dataContract.dtos.establishment;
 
 import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.UUID;
 
-
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
-public class RelationshipEmbeddedId implements Serializable {
-    
-    private UUID userId;
+public class EstablishmentRelationshipDTO {
     private UUID establishmentId;
+    private UUID userId;
     private InteractionTypeEnum interactionType;
+    private String message;
+    private Double rate;
 }

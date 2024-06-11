@@ -20,7 +20,6 @@ public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
-
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -35,9 +34,17 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/events").hasRole("EMPLOYEE")
-                        .requestMatchers(HttpMethod.POST, "/establishments/file").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/establishments").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/establishments/listbyfilters").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/establishments/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/relationship/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/relationship/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/informations/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/informations/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/access/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()
                 )

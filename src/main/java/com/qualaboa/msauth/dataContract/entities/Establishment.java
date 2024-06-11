@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -26,4 +28,12 @@ public class Establishment {
     private Integer averageOrderValue;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Category> categories = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Relationship> relationships = new ArrayList<>();
+    @OneToOne(fetch = FetchType.EAGER)
+    private Information information;
+    @OneToMany
+    private List<AccessCounter> access = new ArrayList<>();
 }

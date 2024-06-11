@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,21 +14,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "events")
-public class Event {
-
+@Table(name = "accessCounter")
+public class AccessCounter {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private Boolean alreadyHappened;
-    private LocalDate date;
-    private String title;
-    private String description;
-    private Double price;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-
-    @ManyToOne
-    private Establishment owner;
+    private LocalDateTime accessedAt;
+    private UUID establishmentId;
 }
-

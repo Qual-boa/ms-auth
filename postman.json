@@ -1,128 +1,516 @@
 {
 	"info": {
-		"_postman_id": "15a69b18-4991-49c0-85f4-ed995ff36189",
+		"_postman_id": "6c3d6318-a4f2-450b-ba1d-9dd67bbfe2f5",
 		"name": "Qual a Boa?",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "17382758"
+		"_exporter_id": "33220020"
 	},
 	"item": [
 		{
-			"name": "Create User",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"askdbajdbsakd\",\r\n    \"password\": \"dkas\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Establishment",
+			"item": [
+				{
+					"name": "ListAll",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/establishments",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"establishments"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{local}}/users",
-					"host": [
-						"{{local}}"
-					],
-					"path": [
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Find User by Id",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "ListByFilters",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"beer\",\r\n    \"categories\":[\r\n        {\r\n            \"categoryType\": 1,\r\n            \"category\": 1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/establishments/listbyfilters",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"establishments",
+								"listbyfilters"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{local}}/users/e3af8953-b40f-4abd-a380-aa232fc3f67c\t",
-					"host": [
-						"{{local}}"
-					],
-					"path": [
-						"users",
-						"e3af8953-b40f-4abd-a380-aa232fc3f67c\t"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Find All Users",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{local}}/users",
-					"host": [
-						"{{local}}"
-					],
-					"path": [
-						"users"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete User",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "{{local}}/users/e3af8953-b40f-4abd-a380-aa232fc3f67c\t",
-					"host": [
-						"{{local}}"
-					],
-					"path": [
-						"users",
-						"e3af8953-b40f-4abd-a380-aa232fc3f67c\t"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update User",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"camilla@gmail.com\",\r\n    \"password\": \"2137\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Save",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fantasyName\": \"fantasyName_fbbbf15aec2e\",\r\n  \"cnpj\": \"cnpj_3027c02c7d2f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/establishments",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"establishments"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "{{local}}/users/e3af8953-b40f-4abd-a380-aa232fc3f67c\t",
-					"host": [
-						"{{local}}"
-					],
-					"path": [
-						"users",
-						"e3af8953-b40f-4abd-a380-aa232fc3f67c\t"
-					]
+				{
+					"name": "GetById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/establishments/48b6eafc-0a2f-4b8a-bfa5-6735b18d4961",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"establishments",
+								"48b6eafc-0a2f-4b8a-bfa5-6735b18d4961"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": \"48b6eafc-0a2f-4b8a-bfa5-6735b18d4961\",\r\n  \"fantasyName\": \"fantasyName_26cc1191a0a2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/establishments",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"establishments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/establishments/48b6eafc-0a2f-4b8a-bfa5-6735b18d4962",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"establishments",
+								"48b6eafc-0a2f-4b8a-bfa5-6735b18d4962"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/establishments/file",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"establishments",
+								"file"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Relationship",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"establishmentId\":\"48b6eafc-0a2f-4b8a-bfa5-6735b18d4961\",\r\n    \"userId\":\"e3af8953-b40f-4abd-a380-aa232fc3f67c\",\r\n    \"interactionType\":3,\r\n    \"message\":\"daora\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/establishments/relationship",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"establishments",
+								"relationship"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Categories",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"establishmentId\":\"48b6eafc-0a2f-4b8a-bfa5-6735b18d4961\",\n    \"categories\":[\n        {\n            \"categoryType\": 1,\n            \"category\": 1\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/establishments/categories",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"establishments",
+								"categories"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"niculinha\",\r\n    \"email\": \"askdbajdbsakd@gmail.com\",\r\n    \"password\": \"dkas1234\",\r\n    \"roleEnum\":\"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/users/register",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find User by Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/users/e3af8953-b40f-4abd-a380-aa232fc3f67c\t",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"users",
+								"e3af8953-b40f-4abd-a380-aa232fc3f67c\t"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/users",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/users/e3af8953-b40f-4abd-a380-aa232fc3f67c\t",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"users",
+								"e3af8953-b40f-4abd-a380-aa232fc3f67c\t"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"camilla@gmail.com\",\r\n    \"password\": \"2137\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/users/e3af8953-b40f-4abd-a380-aa232fc3f67c\t",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"users",
+								"e3af8953-b40f-4abd-a380-aa232fc3f67c\t"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"login\": \"askdbajdbsakd@gmail.com\",\r\n    \"password\": \"dkas1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/users/login",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Find All",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}/categories",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "By Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"categoryType\": 1,\r\n    \"category\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/categories/byid",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"categories",
+								"byid"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Relationship",
+			"item": [
+				{
+					"name": "ByEstablishmentId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"establishmentId\":\"48b6eafc-0a2f-4b8a-bfa5-6735b18d4961\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/relationship/byEstablishmentId",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"relationship",
+								"byEstablishmentId"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ByEstablishmentIdAndInteractionType",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"establishmentId\":\"48b6eafc-0a2f-4b8a-bfa5-6735b18d4961\",\r\n    \"interactionType\":3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}/relationship/byEstablishmentIdAndInteractionType",
+							"host": [
+								"{{local}}"
+							],
+							"path": [
+								"relationship",
+								"byEstablishmentIdAndInteractionType"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "local",
+			"value": "localhost:8080"
 		}
 	]
 }
