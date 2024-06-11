@@ -52,6 +52,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/address/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/address/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/address/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/address/**").permitAll()
+
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
