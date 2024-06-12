@@ -9,7 +9,8 @@ import java.util.Map;
 @Data
 public class DashboardDataDTO {
     private Double averageClicksPerMonth;
-    private List<Object[]> clicksPerDayLast30Days;
+    private Double rate;
+    List<Map<String, Object>> clicksPerDayLast7Days;
     private List<Map<String, Object>> dayOfWeekWithMostClicks;
     private List<Map<String, Object>> findHourWithMostClicks;
     private Integer favoriteCount;

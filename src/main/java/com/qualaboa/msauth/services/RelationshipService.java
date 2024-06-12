@@ -7,6 +7,7 @@ import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.dataContract.entities.Relationship;
 import com.qualaboa.msauth.dataContract.entities.RelationshipEmbeddedId;
 import com.qualaboa.msauth.dataContract.entities.User;
+import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
 import com.qualaboa.msauth.repositories.RelationshipRepository;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class RelationshipService {
@@ -67,4 +69,14 @@ public class RelationshipService {
         if(request.getMessage() != null) relationship.setMessage(request.getMessage());
         return mapper.relationshipToDTO(repository.save(relationship));
     }
+    
+    public Double getEstablishmentAverageRate(UUID establishmentId) {
+        if(establishmentId == null) throw new IllegalArgumentException("Establishment id is null");
+        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
+        id.setEstablishmentId(establishmentId);
+        id.setInteractionType(InteractionTypeEnum.RATE);
+        Relationship example = new Relationship();
+        example.setId(id);
+        return repository.findAverageRateByEstablishmentId(establishmentId);
+    } 
 }

@@ -16,9 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,13 +43,35 @@ public class AccessCounterService {
         Double averageClicks = repository.findAverageClicksPerMonth();
         Integer favoriteCount = getFavoriteCount(establishmentId);
         
+        dashboardDataDTO.setClicksPerDayLast7Days(getClicksPerDayLast7Days());
+        dashboardDataDTO.setRate(relationshipRepository.findAverageRateByEstablishmentId(establishmentId));
         dashboardDataDTO.setAverageClicksPerMonth(averageClicks == null ? 0 : averageClicks);
         dashboardDataDTO.setDayOfWeekWithMostClicks(repository.findDayOfWeekWithMostClicks());
-        dashboardDataDTO.setClicksPerDayLast30Days(getClicksPerDayLast30Days(LocalDateTime.now()));
         dashboardDataDTO.setFindHourWithMostClicks(repository.findHourWithMostClicks());
         dashboardDataDTO.setFavoriteCount(favoriteCount);
         dashboardDataDTO.setCategoriesSearches(mapper.categoryToDTO(categoryRepository.findAll()));
         return dashboardDataDTO;
+    }
+
+    public List<Map<String, Object>> getClicksPerDayLast7Days() {
+        LocalDateTime startDate = LocalDateTime.now().minusDays(7);
+        List<Map<String, Object>> clicksPerDay = repository.findClicksPerDayLast7Days(startDate);
+        Map<LocalDate, Long> clicksPerDayMap = clicksPerDay.stream()
+                .collect(Collectors.toMap(
+                        entry -> (LocalDate) entry.get("date"),
+                        entry -> (Long) entry.get("count")
+                ));
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (int i = 0; i < 7; i++) {
+            LocalDate date = LocalDate.now().minusDays(i);
+            Map<String, Object> dayResult = new HashMap<>();
+            dayResult.put("date", date);
+            dayResult.put("count", clicksPerDayMap.getOrDefault(date, 0L));
+            result.add(dayResult);
+        }
+
+        return result;
     }
     
     private Integer getFavoriteCount(UUID establishmentId) {
@@ -60,13 +81,5 @@ public class AccessCounterService {
         Relationship example = new Relationship();
         example.setId(id);
         return relationshipRepository.findAll(Example.of(example)).size();
-    }
-    
-    public List<Object[]> getClicksPerDayLast30Days(LocalDateTime startDate) {
-        // Calcula a data de 30 dias atrás a partir da data fornecida
-        LocalDateTime endDate = startDate.minusDays(30);
-
-        // Chama o método do repositório com as datas calculadas
-        return repository.findClicksPerDay(startDate, endDate);
     }
 }

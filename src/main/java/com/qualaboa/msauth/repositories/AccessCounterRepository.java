@@ -20,13 +20,6 @@ public interface AccessCounterRepository extends JpaRepository<AccessCounter, UU
             "GROUP BY FUNCTION('MONTH', ac.accessedAt)) AS monthlyClicks")
     Double findAverageClicksPerMonth();
 
-    @Query("SELECT DATE_TRUNC('day', ac.accessedAt) AS date, COALESCE(COUNT(ac), 0) AS count " +
-            "FROM AccessCounter ac " +
-            "WHERE ac.accessedAt >= :startDate " +
-            "GROUP BY DATE_TRUNC('day', ac.accessedAt) " +
-            "ORDER BY DATE_TRUNC('day', ac.accessedAt)")
-    List<Object[]> findClicksPerDayLast30Days(@Param("startDate") LocalDateTime startDate);
-
     @Query("SELECT FUNCTION('DAY_OF_WEEK', ac.accessedAt) AS dayOfWeek, COUNT(ac) AS count " +
             "FROM AccessCounter ac " +
             "GROUP BY FUNCTION('DAY_OF_WEEK', ac.accessedAt) " +
@@ -39,11 +32,10 @@ public interface AccessCounterRepository extends JpaRepository<AccessCounter, UU
             "ORDER BY COUNT(ac) DESC")
     List<Map<String, Object>> findHourWithMostClicks();
 
-    @Query("""
-            SELECT ac.accessedAt, COUNT(ac) \
-            FROM AccessCounter ac \
-            WHERE ac.accessedAt BETWEEN :startDate AND :endDate \
-            GROUP BY ac.accessedAt \
-            ORDER BY ac.accessedAt DESC""")
-    List<Object[]> findClicksPerDay(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    @Query("SELECT CAST(ac.accessedAt AS LocalDate) AS date, COUNT(ac) AS count " +
+            "FROM AccessCounter ac " +
+            "WHERE ac.accessedAt >= :startDate " +
+            "GROUP BY CAST(ac.accessedAt AS LocalDate) " +
+            "ORDER BY CAST(ac.accessedAt AS LocalDate)")
+    List<Map<String, Object>> findClicksPerDayLast7Days(LocalDateTime startDate);
 }

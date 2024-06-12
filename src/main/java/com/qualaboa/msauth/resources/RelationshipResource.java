@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/relationship")
@@ -26,5 +28,12 @@ public class RelationshipResource {
     @GetMapping("/byEstablishmentIdAndInteractionType")
     public ResponseEntity<List<RelationshipResponseDTO>> byEstablishmentIdAndInteractionType (@RequestBody RelationshipSearchDTO request) {
         return ResponseEntity.ok().body(service.getRelationshipByEstablishmentIdAndInteractionType(request));
+    }
+    
+    @GetMapping("/average/{id}")
+    public ResponseEntity<Double> average(@PathVariable UUID id) {
+        Double average = service.getEstablishmentAverageRate(id);
+        if (average == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok().body(average);
     }
 }
