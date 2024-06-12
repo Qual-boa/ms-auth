@@ -4,13 +4,17 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.qualaboa.msauth.dataContract.entities.Relationship;
 import com.qualaboa.msauth.dataContract.entities.User;
+import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
+import com.qualaboa.msauth.dataContract.enums.RoleEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.UUID;
 
 @Service
 public class TokenService {
@@ -20,11 +24,21 @@ public class TokenService {
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
+            UUID establishmentId = null;
+            if(user.getRoleEnum().equals(RoleEnum.ADMIN)) {
+                for (Relationship relationship : user.getRelationships()) {
+                    if(relationship.getId().getInteractionType().equals(InteractionTypeEnum.EMPLOYEE)) {
+                        establishmentId = relationship.getId().getEstablishmentId();
+                    }
+                }
+            }
             return  JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
                     .withExpiresAt(genExpirationDate())
                     .withClaim("name", user.getName())
+                    .withClaim("userId", user.getId().toString())
+                    .withClaim("establishmentId", establishmentId + "")
                     .sign(algorithm);
 
         } catch (JWTCreationException e){
