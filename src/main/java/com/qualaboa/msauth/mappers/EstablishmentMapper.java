@@ -26,6 +26,7 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         EstablishmentCreateDTO createDTO = (EstablishmentCreateDTO) obj;
         entity.setFantasyName(createDTO.getFantasyName());
         entity.setCnpj(createDTO.getCnpj());
+        entity.setAverageOrderValue(createDTO.getAverageOrderValue());
         return entity;
     }
 
