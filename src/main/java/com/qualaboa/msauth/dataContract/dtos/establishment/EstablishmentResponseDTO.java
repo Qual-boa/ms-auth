@@ -1,10 +1,9 @@
 package com.qualaboa.msauth.dataContract.dtos.establishment;
 
 import com.qualaboa.msauth.dataContract.dtos.information.InformationResponseDTO;
-import com.qualaboa.msauth.dataContract.entities.Category;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipResponseDTO;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 

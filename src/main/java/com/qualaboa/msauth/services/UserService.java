@@ -1,9 +1,12 @@
 package com.qualaboa.msauth.services;
 
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipCreateDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserCreateDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserUpdateDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserResponseDTO;
 import com.qualaboa.msauth.dataContract.entities.User;
+import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
+import com.qualaboa.msauth.dataContract.enums.RoleEnum;
 import com.qualaboa.msauth.mappers.UserMapper;
 import com.qualaboa.msauth.repositories.UserRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
@@ -31,6 +34,9 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
 
     @Autowired
     private UserRepository repository;
+    
+    @Autowired
+    private RelationshipService relationshipService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -65,7 +71,14 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
     @Transactional
     public UserResponseDTO save(UserCreateDTO userCreateDTO) {
         User entity = UserMapper.toEntity(userCreateDTO);
-
+        if(entity.getRoleEnum() == RoleEnum.ADMIN) {
+            RelationshipCreateDTO relationshipRequest = new RelationshipCreateDTO();
+            if(userCreateDTO.getEstablishmentId() == null) throw new ResourceNotFoundException("Establishment id is required");
+            relationshipRequest.setUserId(userCreateDTO.getEstablishmentId());
+            relationshipRequest.setEstablishmentId(userCreateDTO.getEstablishmentId());
+            relationshipRequest.setInteractionType(InteractionTypeEnum.EMPLOYEE);
+            relationshipService.save(relationshipRequest);
+        }
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         entity.setCreatedAt(LocalDateTime.now());
         entity = repository.save(entity);

@@ -1,6 +1,7 @@
 package com.qualaboa.msauth.services;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.*;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipCreateDTO;
 import com.qualaboa.msauth.dataContract.entities.*;
 import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
@@ -35,7 +36,7 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
-    private RelationshipRepository relationshipRepository;
+    private RelationshipService relationshipService;
     @Autowired
     private AccessCounterRepository accessCounterRepository;
     @Autowired
@@ -73,19 +74,10 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     }
     
     @Transactional
-    public EstablishmentResponseDTO saveRelationship(EstablishmentRelationshipDTO request){
+    public EstablishmentResponseDTO saveRelationship(RelationshipCreateDTO request){
         Establishment entity = repository.findById(request.getEstablishmentId()).orElseThrow(()
                 -> new ResourceNotFoundException("Establishment not found"));
-        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
-        id.setEstablishmentId(request.getEstablishmentId());
-        id.setUserId(request.getUserId());
-        id.setInteractionType(request.getInteractionType());
-        Relationship relationship = new Relationship();
-        relationship.setId(id);
-        if(request.getRate() != null) relationship.setRate(request.getRate());
-        if(request.getMessage() != null) relationship.setMessage(request.getMessage());
-        relationshipRepository.save(relationship);
-        entity.getRelationships().add(relationship);
+        entity.getRelationships().add(mapper.relationshipToEntity(relationshipService.save(request)));
         return (EstablishmentResponseDTO) mapper.toDto(entity);
     }
     

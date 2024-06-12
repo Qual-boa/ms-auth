@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.dataContract.dtos.establishment;
+package com.qualaboa.msauth.dataContract.dtos.relationship;
 
 import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import lombok.Data;
@@ -12,6 +12,7 @@ import java.util.UUID;
 @Data
 public class RelationshipResponseDTO {
     private UUID userId;
+    private UUID establishmentId;
     private InteractionTypeEnum interactionType;
     private Double rate;
     private String message;

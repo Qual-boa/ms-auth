@@ -12,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -30,11 +32,12 @@ public class UserCreateDTO {
 
     @NotNull(message = "Role Enum can't be null")
     private RoleEnum roleEnum;
+    
+    private UUID establishmentId;
 
     public UserCreateDTO(User entity) {
         this.email = entity.getEmail();
         this.password = entity.getPassword();
         this.roleEnum = entity.getRoleEnum();
     }
-
 }

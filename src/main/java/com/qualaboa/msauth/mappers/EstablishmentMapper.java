@@ -2,9 +2,11 @@ package com.qualaboa.msauth.mappers;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.*;
 import com.qualaboa.msauth.dataContract.dtos.information.InformationResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipResponseDTO;
 import com.qualaboa.msauth.dataContract.entities.Category;
 import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.dataContract.entities.Relationship;
+import com.qualaboa.msauth.dataContract.entities.RelationshipEmbeddedId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -62,7 +64,7 @@ public class EstablishmentMapper implements IMapper<Establishment> {
     }
 
     public List<CategoryResponseDTO> categoryToDTO(List<Category> categories) {
-        if(categories == null) return null;
+        if(categories == null || categories.isEmpty()) return null;
         List<CategoryResponseDTO> categoriesDto = new ArrayList<>();
         for(Category category : categories) {
             categoriesDto.add(categoryToDTO(category));
@@ -70,17 +72,46 @@ public class EstablishmentMapper implements IMapper<Establishment> {
         return categoriesDto;
     }
     
+    public RelationshipResponseDTO relationshipToDTO(Relationship relationship) {
+        if(relationship == null) return null;
+        RelationshipResponseDTO relationshipDto = new RelationshipResponseDTO();
+        if (relationship.getMessage() != null) relationshipDto.setMessage(relationship.getMessage());
+        if (relationship.getRate() != null) relationshipDto.setRate(relationship.getRate());
+        if (relationship.getId().getEstablishmentId() != null) relationshipDto.setEstablishmentId((relationship.getId().getEstablishmentId()));
+        if (relationship.getId().getUserId() != null) relationshipDto.setUserId((relationship.getId().getUserId()));
+        relationshipDto.setInteractionType(relationship.getId().getInteractionType());
+        return relationshipDto;
+    }
+
     public List<RelationshipResponseDTO> relationshipToDTO(List<Relationship> relationships) {
-        List<RelationshipResponseDTO> relationshipsDto = new ArrayList<>();
+        if(relationships == null || relationships.isEmpty()) return null;
+        List<RelationshipResponseDTO> relationshipDto = new ArrayList<>();
         for(Relationship relationship : relationships) {
-            RelationshipResponseDTO relationshipDto = new RelationshipResponseDTO();
-            relationshipDto.setUserId(relationship.getId().getUserId());
-            relationshipDto.setInteractionType(relationship.getId().getInteractionType());
-            relationshipDto.setRate(relationship.getRate() == null ? 0 : relationship.getRate());
-            relationshipDto.setMessage(relationship.getMessage() == null ? "" : relationship.getMessage());
-            relationshipsDto.add(relationshipDto);
+            relationshipDto.add(relationshipToDTO(relationship));
         }
-        return relationshipsDto;
+        return relationshipDto;
+    }
+    
+    public Relationship relationshipToEntity(RelationshipResponseDTO dto) {
+        if(dto == null) return null;
+        Relationship relationship = new Relationship();
+        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
+        id.setEstablishmentId(dto.getEstablishmentId());
+        id.setUserId(dto.getUserId());
+        id.setInteractionType(dto.getInteractionType());
+        relationship.setId(id);
+        if(dto.getMessage() != null) relationship.setMessage(dto.getMessage());
+        if(dto.getRate() != null) relationship.setRate(dto.getRate());
+        return relationship;
+    }
+    
+    public List<Relationship> relationshipToEntity(List<RelationshipResponseDTO> dtos){
+        if(dtos == null || dtos.isEmpty()) return null;
+        List<Relationship> relationships = new ArrayList<>();
+        for(RelationshipResponseDTO dto : dtos) {
+            relationships.add(relationshipToEntity(dto));
+        }
+        return relationships;
     }
     
     public List<EstablishmentResponseDTO> toDto(List<Establishment> entity) {

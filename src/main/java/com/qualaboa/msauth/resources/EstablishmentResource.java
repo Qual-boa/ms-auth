@@ -1,6 +1,7 @@
 package com.qualaboa.msauth.resources;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.*;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipCreateDTO;
 import com.qualaboa.msauth.services.EstablishmentService;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
@@ -84,7 +85,7 @@ public class EstablishmentResource {
     }
     
     @PutMapping("/relationship")
-    public ResponseEntity<EstablishmentResponseDTO> createRelationship(@RequestBody EstablishmentRelationshipDTO dto){
+    public ResponseEntity<EstablishmentResponseDTO> createRelationship(@RequestBody RelationshipCreateDTO dto){
         EstablishmentResponseDTO responseDTO = service.saveRelationship(dto);
         return ResponseEntity.ok(responseDTO);
     }

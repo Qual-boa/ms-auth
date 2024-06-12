@@ -1,7 +1,7 @@
 package com.qualaboa.msauth.resources;
 
-import com.qualaboa.msauth.dataContract.dtos.establishment.RelationshipResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.establishment.RelationshipSearchDTO;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipSearchDTO;
 import com.qualaboa.msauth.services.RelationshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

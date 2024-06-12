@@ -1,4 +1,4 @@
-package com.qualaboa.msauth.dataContract.dtos.establishment;
+package com.qualaboa.msauth.dataContract.dtos.relationship;
 
 import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import lombok.AllArgsConstructor;
@@ -10,10 +10,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EstablishmentRelationshipDTO {
+public class RelationshipSearchDTO {
     private UUID establishmentId;
-    private UUID userId;
     private InteractionTypeEnum interactionType;
-    private String message;
-    private Double rate;
 }
