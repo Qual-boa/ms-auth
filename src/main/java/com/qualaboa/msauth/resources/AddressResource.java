@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/address")
+@CrossOrigin(origins = "*")
 public class AddressResource {
 
     @Autowired

@@ -5,7 +5,6 @@ import com.qualaboa.msauth.dataContract.entities.Category;
 import com.qualaboa.msauth.dataContract.entities.CategoryEmbeddedId;
 import com.qualaboa.msauth.services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
+@CrossOrigin(origins = "*")
 public class CategoryResource {
     
     @Autowired

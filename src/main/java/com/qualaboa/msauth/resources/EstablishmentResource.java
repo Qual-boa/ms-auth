@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/establishments")
+@CrossOrigin(origins = "*")
 public class EstablishmentResource {
 
     @Autowired

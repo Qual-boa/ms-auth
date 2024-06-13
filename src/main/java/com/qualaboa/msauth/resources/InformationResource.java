@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/informations")
+@CrossOrigin(origins = "*")
 public class InformationResource {
 
     @Autowired
