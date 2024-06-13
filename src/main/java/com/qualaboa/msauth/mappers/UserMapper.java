@@ -21,6 +21,7 @@ public class UserMapper {
     public static User toEntity(UserUpdateDTO userRequest, User entity) {
         if (userRequest == null) return null;
         User user = new User();
+        user.setId(entity.getId());
         user.setName(userRequest.getName() == null ? entity.getName() : userRequest.getName());
         user.setEmail(userRequest.getEmail() == null ? entity.getEmail() : userRequest.getEmail());
         user.setPassword(userRequest.getPassword() == null ? entity.getPassword() : userRequest.getPassword());

@@ -108,6 +108,7 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
     public UserResponseDTO update(UserUpdateDTO request, UUID uuid) {
         User entity = repository.findById(uuid).orElseThrow(()
                 -> new ResourceNotFoundException("Resource not found"));
+        if(request.getEmail() != null && repository.existsByEmail(request.getEmail())) throw new ResourceNotFoundException("Email already exists");
         entity = UserMapper.toEntity(request, entity);
 
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
