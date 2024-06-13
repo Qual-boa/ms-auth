@@ -149,7 +149,6 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         };
     }
 
-
     private EstablishmentResponseDTO[] sortByPrice(List<EstablishmentResponseDTO> response, SortOrderEnum sortOrder) {
         EstablishmentResponseDTO[] array = new EstablishmentResponseDTO[response.size()];
         quickSort(response.toArray(array), 0, response.size() - 1, Objects.equals(sortOrder, SortOrderEnum.ASCENDING));

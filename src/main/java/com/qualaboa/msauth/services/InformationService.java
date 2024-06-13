@@ -3,8 +3,10 @@ package com.qualaboa.msauth.services;
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
 import com.qualaboa.msauth.dataContract.dtos.information.InformationCreateDTO;
 import com.qualaboa.msauth.dataContract.dtos.information.InformationResponseDTO;
+import com.qualaboa.msauth.dataContract.dtos.information.InformationUpdateDTO;
 import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.dataContract.entities.Information;
+import com.qualaboa.msauth.dataContract.entities.Relationship;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.mappers.InformationMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
@@ -43,6 +45,30 @@ public class InformationService {
         LocalTime openAt = LocalTime.of(informationCreateDTO.getOpenAt().getHour(), informationCreateDTO.getOpenAt().getMinute());
 
         Information entity = infoMapper.toEntity(informationCreateDTO);
+        establishmentEntity.get().setInformation(repository.save(entity));
+        return (EstablishmentResponseDTO) establishmentMapper.toDto(establishmentRepository.save(establishmentEntity.get()));
+    }
+    
+    public EstablishmentResponseDTO update(InformationUpdateDTO request){
+        Optional<Establishment> establishmentEntity = establishmentRepository.findById(request.getEstablishmentId());
+        if(establishmentEntity.isEmpty()) throw new IllegalArgumentException("Establishment not found");
+
+        LocalTime closeAt = LocalTime.of(request.getCloseAt().getHour(), request.getCloseAt().getMinute());
+        LocalTime openAt = LocalTime.of(request.getOpenAt().getHour(), request.getOpenAt().getMinute());
+
+        Information entity = establishmentEntity.get().getInformation();
+        entity.setCloseAt(closeAt);
+        entity.setOpenAt(openAt);
+        entity.setFacebookUrl(request.getFacebookUrl());
+        entity.setTelegramUrl(request.getTelegramUrl());
+        entity.setInstagramUrl(request.getInstagramUrl());
+        entity.setHasAccessibility(request.getHasAccessibility());
+        entity.setHasParking(request.getHasParking());
+        entity.setHasTv(request.getHasTv());
+        entity.setHasWifi(request.getHasWifi());
+        entity.setPhone(request.getPhone());
+        entity.setUpdatedAt(LocalDateTime.now());
+        
         establishmentEntity.get().setInformation(repository.save(entity));
         return (EstablishmentResponseDTO) establishmentMapper.toDto(establishmentRepository.save(establishmentEntity.get()));
     }

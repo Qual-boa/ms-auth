@@ -19,8 +19,6 @@ public class UserResponseDTO {
     private UUID id;
     private String name;
     private String email;
-
-    private UserTypeEnum userTypeEnum;
     private RoleEnum roleEnum;
 
     public UserResponseDTO(User entity) {

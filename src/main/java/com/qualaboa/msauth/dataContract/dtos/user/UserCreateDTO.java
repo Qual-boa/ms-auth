@@ -23,7 +23,6 @@ public class UserCreateDTO {
     @Email(message = "Email should be valid")
     private String email;
 
-    @Size(min = 8, message = "Name requires at least 8 caracters")
     private String name;
 
     @NotBlank
