@@ -71,17 +71,17 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
     @Transactional
     public UserResponseDTO save(UserCreateDTO userCreateDTO) {
         User entity = UserMapper.toEntity(userCreateDTO);
-        if(entity.getRoleEnum() == RoleEnum.ADMIN) {
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        entity.setCreatedAt(LocalDateTime.now());
+        entity = repository.save(entity);
+        if(userCreateDTO.getRoleEnum() == RoleEnum.ADMIN) {
             RelationshipCreateDTO relationshipRequest = new RelationshipCreateDTO();
             if(userCreateDTO.getEstablishmentId() == null) throw new ResourceNotFoundException("Establishment id is required");
-            relationshipRequest.setUserId(userCreateDTO.getEstablishmentId());
+            relationshipRequest.setUserId(entity.getId());
             relationshipRequest.setEstablishmentId(userCreateDTO.getEstablishmentId());
             relationshipRequest.setInteractionType(InteractionTypeEnum.EMPLOYEE);
             relationshipService.save(relationshipRequest);
         }
-        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
-        entity.setCreatedAt(LocalDateTime.now());
-        entity = repository.save(entity);
         return new UserResponseDTO(entity);
     }
 
