@@ -17,18 +17,18 @@ public interface AccessCounterRepository extends JpaRepository<AccessCounter, UU
     @Query("SELECT AVG(monthlyClicks.count) " +
             "FROM (SELECT COUNT(ac) AS count " +
             "FROM AccessCounter ac " +
-            "GROUP BY FUNCTION('MONTH', ac.accessedAt)) AS monthlyClicks")
+            "GROUP BY FUNCTION('date_part', 'month', ac.accessedAt)) AS monthlyClicks")
     Double findAverageClicksPerMonth();
 
-    @Query("SELECT FUNCTION('DAY_OF_WEEK', ac.accessedAt) AS dayOfWeek, COUNT(ac) AS count " +
+    @Query("SELECT TO_CHAR(ac.accessedAt, 'Day') AS dayOfWeek, COUNT(ac) AS count " +
             "FROM AccessCounter ac " +
-            "GROUP BY FUNCTION('DAY_OF_WEEK', ac.accessedAt) " +
+            "GROUP BY TO_CHAR(ac.accessedAt, 'Day') " +
             "ORDER BY COUNT(ac) DESC")
     List<Map<String, Object>> findDayOfWeekWithMostClicks();
 
-    @Query("SELECT FUNCTION('HOUR', ac.accessedAt) AS hour, COUNT(ac) AS count " +
+    @Query("SELECT EXTRACT(HOUR FROM ac.accessedAt) AS hour, COUNT(ac) AS count " +
             "FROM AccessCounter ac " +
-            "GROUP BY FUNCTION('HOUR', ac.accessedAt) " +
+            "GROUP BY EXTRACT(HOUR FROM ac.accessedAt) " +
             "ORDER BY COUNT(ac) DESC")
     List<Map<String, Object>> findHourWithMostClicks();
 
