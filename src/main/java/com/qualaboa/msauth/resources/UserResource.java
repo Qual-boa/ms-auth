@@ -51,8 +51,7 @@ public class UserResource {
         return ResponseEntity.ok(service.findById(id));
     }
     
-    
-    @GetMapping("/byEmail/{id}")
+    @GetMapping("/byEmail")
     public ResponseEntity<UserSessionDTO> findByEmail(@RequestParam String email){
         return ResponseEntity.ok(service.findByEmail(email));
     }

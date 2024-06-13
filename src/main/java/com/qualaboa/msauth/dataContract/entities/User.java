@@ -34,7 +34,7 @@ public class User implements UserDetails {
     private LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)
     private RoleEnum roleEnum;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<Relationship> relationships;
 
     @Override
