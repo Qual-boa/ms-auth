@@ -24,21 +24,12 @@ public class TokenService {
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            UUID establishmentId = null;
-            if(user.getRoleEnum().equals(RoleEnum.ADMIN)) {
-                for (Relationship relationship : user.getRelationships()) {
-                    if(relationship.getId().getInteractionType().equals(InteractionTypeEnum.EMPLOYEE)) {
-                        establishmentId = relationship.getId().getEstablishmentId();
-                    }
-                }
-            }
             return  JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getEmail())
                     .withExpiresAt(genExpirationDate())
                     .withClaim("name", user.getName())
                     .withClaim("userId", user.getId().toString())
-                    .withClaim("establishmentId", establishmentId + "")
                     .sign(algorithm);
 
         } catch (JWTCreationException e){
