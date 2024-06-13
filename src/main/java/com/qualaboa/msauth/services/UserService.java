@@ -1,13 +1,16 @@
 package com.qualaboa.msauth.services;
 
+import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
 import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipCreateDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.UserSessionDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserUpdateDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserResponseDTO;
 import com.qualaboa.msauth.dataContract.entities.User;
 import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import com.qualaboa.msauth.dataContract.enums.RoleEnum;
 import com.qualaboa.msauth.mappers.UserMapper;
+import com.qualaboa.msauth.repositories.EstablishmentRepository;
 import com.qualaboa.msauth.repositories.UserRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import com.qualaboa.msauth.services.interfaces.*;
@@ -37,6 +40,8 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
     
     @Autowired
     private RelationshipService relationshipService;
+    @Autowired
+    private EstablishmentService establishmentService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -65,6 +70,19 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
         User entity = repository.findById(uuid).orElseThrow(()
                 -> new ResourceNotFoundException("Resource not found"));
         return new UserResponseDTO(entity);
+    }
+    
+    @Transactional
+    public UserSessionDTO findByEmail(String email) {
+        User entity = repository.findUserByEmail(email);
+        if (entity == null) throw new ResourceNotFoundException("User not found");
+        UserSessionDTO userSessionDTO = new UserSessionDTO();
+        userSessionDTO.setUserId(entity.getId());
+        if(entity.getRoleEnum() == RoleEnum.ADMIN) {
+            EstablishmentResponseDTO establishmentFound = establishmentService.getEstablishmentByUserId(entity.getId());
+            userSessionDTO.setEstablishmentId(establishmentFound.getId());
+        }
+        return userSessionDTO;
     }
 
     @Override

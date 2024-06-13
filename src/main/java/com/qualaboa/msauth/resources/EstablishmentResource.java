@@ -42,6 +42,13 @@ public class EstablishmentResource {
         if(responseDTO == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(responseDTO);
     }
+    
+    @GetMapping("/getByUserId/{id}")
+    public ResponseEntity<EstablishmentResponseDTO> getEstablishmentByUserId(@PathVariable UUID id){
+        EstablishmentResponseDTO responseDTO = service.getEstablishmentByUserId(id);
+        if(responseDTO == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(responseDTO);
+    }
 
     @PostMapping("/listbyfilters")
     public ResponseEntity<List<EstablishmentResponseDTO>> getListByfilters(@RequestBody EstablishmentSearchDTO request) throws IOException{

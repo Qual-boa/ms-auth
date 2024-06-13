@@ -2,7 +2,9 @@ package com.qualaboa.msauth.services;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.*;
 import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipResponseDTO;
 import com.qualaboa.msauth.dataContract.entities.*;
+import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
 import com.qualaboa.msauth.repositories.AccessCounterRepository;
@@ -37,6 +39,8 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
     private CategoryRepository categoryRepository;
     @Autowired
     private RelationshipService relationshipService;
+    @Autowired
+    private RelationshipRepository relationshipRepository;
     @Autowired
     private AccessCounterRepository accessCounterRepository;
     @Autowired
@@ -106,6 +110,20 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         entity.getAccess().add(newAccess);
         accessCounterRepository.save(newAccess);
         return (EstablishmentResponseDTO) mapper.toDto(entity);
+    }
+    
+    @Transactional
+    public EstablishmentResponseDTO getEstablishmentByUserId(UUID userId){
+        if(userId == null) throw new IllegalArgumentException("user id is null");
+        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
+        id.setUserId(userId);
+        id.setInteractionType(InteractionTypeEnum.EMPLOYEE);
+        Relationship example = new Relationship();
+        example.setId(id);
+        List<RelationshipResponseDTO> relationshipsFound = mapper.relationshipToDTO(relationshipRepository.findAll(Example.of(example)));
+        Optional<Establishment> establishmentFound = repository.findById(relationshipsFound.get(0).getEstablishmentId());
+        if(establishmentFound.isEmpty()) throw new ResourceNotFoundException("Establishment not found");
+        return (EstablishmentResponseDTO) mapper.toDto(establishmentFound.get());
     }
 
     @Transactional

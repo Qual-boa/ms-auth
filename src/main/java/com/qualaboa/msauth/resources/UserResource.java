@@ -1,13 +1,10 @@
 package com.qualaboa.msauth.resources;
 
 import com.qualaboa.msauth.config.TokenService;
-import com.qualaboa.msauth.dataContract.dtos.user.UserCreateDTO;
-import com.qualaboa.msauth.dataContract.dtos.user.LoginResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.user.UserUpdateDTO;
-import com.qualaboa.msauth.dataContract.dtos.user.UserResponseDTO;
-import com.qualaboa.msauth.dataContract.dtos.user.AuthenticationDTO;
+import com.qualaboa.msauth.dataContract.dtos.user.*;
 import com.qualaboa.msauth.dataContract.entities.User;
 import com.qualaboa.msauth.services.UserService;
+import com.qualaboa.msauth.services.exceptions.ConflictException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -44,7 +41,7 @@ public class UserResource {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponseDTO> save(@RequestBody @Valid UserCreateDTO dto){
-        if(this.service.loadUserByUsername(dto.getEmail()) != null) return ResponseEntity.badRequest().build();
+        if(this.service.loadUserByUsername(dto.getEmail()) != null) throw new ConflictException("Email already exists");
         UserResponseDTO userResponseDTO = service.save(dto);
         return ResponseEntity.created(URI.create("/users")).body(userResponseDTO);
     }
@@ -52,6 +49,12 @@ public class UserResource {
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable UUID id){
         return ResponseEntity.ok(service.findById(id));
+    }
+    
+    
+    @GetMapping("/byEmail/{id}")
+    public ResponseEntity<UserSessionDTO> findByEmail(@RequestParam String email){
+        return ResponseEntity.ok(service.findByEmail(email));
     }
 
     @GetMapping
