@@ -36,4 +36,5 @@ public class InformationUpdateDTO {
     private String telegramUrl;
     @NotNull
     private UUID establishmentId;
+    private String description;
 }

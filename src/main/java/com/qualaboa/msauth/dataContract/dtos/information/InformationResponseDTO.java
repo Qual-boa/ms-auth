@@ -28,4 +28,5 @@ public class InformationResponseDTO {
     private String facebookUrl;
     private String instagramUrl;
     private String telegramUrl;
+    private String description;
 }

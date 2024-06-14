@@ -34,4 +34,5 @@ public class Information {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private UUID establishmentId;
+    private String description;
 }

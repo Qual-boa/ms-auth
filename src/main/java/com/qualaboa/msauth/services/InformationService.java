@@ -67,6 +67,7 @@ public class InformationService {
         entity.setHasTv(request.getHasTv());
         entity.setHasWifi(request.getHasWifi());
         entity.setPhone(request.getPhone());
+        entity.setDescription(request.getDescription());
         entity.setUpdatedAt(LocalDateTime.now());
         
         establishmentEntity.get().setInformation(repository.save(entity));

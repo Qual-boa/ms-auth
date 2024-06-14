@@ -32,6 +32,7 @@ public class InformationMapper implements IMapper<Information> {
         dto.setFacebookUrl(information.getFacebookUrl());
         dto.setInstagramUrl(information.getInstagramUrl());
         dto.setTelegramUrl(information.getTelegramUrl());
+        dto.setDescription(information.getDescription());
         return dto;
     }
 
@@ -48,6 +49,7 @@ public class InformationMapper implements IMapper<Information> {
         info.setPhone(createDTO.getPhone());
         info.setFacebookUrl(createDTO.getFacebookUrl());
         info.setInstagramUrl(createDTO.getInstagramUrl());
+        info.setDescription(createDTO.getDescription());
         info.setTelegramUrl(info.getTelegramUrl());
         return info;
     }

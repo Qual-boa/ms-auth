@@ -48,4 +48,6 @@ public class InformationCreateDTO {
     private String telegramUrl;
 
     private UUID establishmentId;
+    
+    private String description;
 }
