@@ -25,6 +25,8 @@ public class UserMapper {
         user.setName(userRequest.getName() == null ? entity.getName() : userRequest.getName());
         user.setEmail(userRequest.getEmail() == null ? entity.getEmail() : userRequest.getEmail());
         user.setPassword(userRequest.getPassword() == null ? entity.getPassword() : userRequest.getPassword());
+        user.setRoleEnum(entity.getRoleEnum());
+        user.setCreatedAt(entity.getCreatedAt());
         user.setUpdatedAt(LocalDateTime.now());
         return user;
     }
