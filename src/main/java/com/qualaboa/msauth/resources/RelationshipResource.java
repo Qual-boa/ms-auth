@@ -34,4 +34,5 @@ public class RelationshipResource {
         if (average == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok().body(average);
     }
+    
 }

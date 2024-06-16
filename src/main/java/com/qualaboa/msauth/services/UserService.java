@@ -2,20 +2,25 @@ package com.qualaboa.msauth.services;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.EstablishmentResponseDTO;
 import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipCreateDTO;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipUnfavoriteDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserCreateDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserSessionDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserUpdateDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.UserResponseDTO;
+import com.qualaboa.msauth.dataContract.entities.Relationship;
+import com.qualaboa.msauth.dataContract.entities.RelationshipEmbeddedId;
 import com.qualaboa.msauth.dataContract.entities.User;
 import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import com.qualaboa.msauth.dataContract.enums.RoleEnum;
 import com.qualaboa.msauth.mappers.UserMapper;
 import com.qualaboa.msauth.repositories.EstablishmentRepository;
+import com.qualaboa.msauth.repositories.RelationshipRepository;
 import com.qualaboa.msauth.repositories.UserRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import com.qualaboa.msauth.services.interfaces.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +30,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,6 +43,8 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
 
     @Autowired
     private UserRepository repository;
+    @Autowired
+    private RelationshipRepository relationshipRepository;
     
     @Autowired
     private RelationshipService relationshipService;
@@ -117,5 +125,17 @@ public class UserService implements IServiceSave<UserCreateDTO, UserResponseDTO>
         entity = repository.save(entity);
         return new UserResponseDTO(entity);
     }
-
+    
+    @Transactional
+    public void unfavorite(RelationshipUnfavoriteDTO request) {
+        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
+        id.setUserId(request.getUserId());
+        id.setEstablishmentId(request.getEstablishmentId());
+        id.setInteractionType(InteractionTypeEnum.FAVORITE);
+        Relationship example = new Relationship();
+        example.setId(id);
+        List<Relationship> relationshipFound = relationshipRepository.findAll(Example.of(example));
+        if (relationshipFound.isEmpty()) throw new ResourceNotFoundException("Favorite relationship not found");
+        relationshipRepository.delete(relationshipFound.get(0));
+    }
 }

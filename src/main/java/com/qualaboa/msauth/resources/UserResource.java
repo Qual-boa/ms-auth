@@ -1,6 +1,7 @@
 package com.qualaboa.msauth.resources;
 
 import com.qualaboa.msauth.config.TokenService;
+import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipUnfavoriteDTO;
 import com.qualaboa.msauth.dataContract.dtos.user.*;
 import com.qualaboa.msauth.dataContract.entities.User;
 import com.qualaboa.msauth.services.UserService;
@@ -72,5 +73,10 @@ public class UserResource {
         UserResponseDTO userResponseDTO = service.update(dto, id);
         return ResponseEntity.ok(userResponseDTO);
     }
-
+    
+    @DeleteMapping("/unfavorite")
+    public ResponseEntity<Void> unfavorite(@RequestBody @Valid RelationshipUnfavoriteDTO request){
+        service.unfavorite(request);
+        return ResponseEntity.noContent().build();
+    }
 }

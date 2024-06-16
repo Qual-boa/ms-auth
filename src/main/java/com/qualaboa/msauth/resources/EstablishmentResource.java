@@ -2,6 +2,7 @@ package com.qualaboa.msauth.resources;
 
 import com.qualaboa.msauth.dataContract.dtos.establishment.*;
 import com.qualaboa.msauth.dataContract.dtos.relationship.RelationshipCreateDTO;
+import com.qualaboa.msauth.dataContract.entities.Establishment;
 import com.qualaboa.msauth.services.EstablishmentService;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
@@ -48,6 +49,13 @@ public class EstablishmentResource {
         EstablishmentResponseDTO responseDTO = service.getEstablishmentByUserId(id);
         if(responseDTO == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(responseDTO);
+    }
+    
+    @GetMapping("/favorites/{id}")
+    public ResponseEntity<List<EstablishmentResponseDTO>> getEstablishmentFavorites(@PathVariable UUID id){
+        List<EstablishmentResponseDTO> responseDTOS = service.findEstablishmentsByUserId(id);
+        if(responseDTOS == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(responseDTOS);
     }
 
     @PostMapping("/listbyfilters")

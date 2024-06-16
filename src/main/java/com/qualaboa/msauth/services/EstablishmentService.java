@@ -7,10 +7,7 @@ import com.qualaboa.msauth.dataContract.entities.*;
 import com.qualaboa.msauth.dataContract.enums.InteractionTypeEnum;
 import com.qualaboa.msauth.dataContract.enums.SortOrderEnum;
 import com.qualaboa.msauth.mappers.EstablishmentMapper;
-import com.qualaboa.msauth.repositories.AccessCounterRepository;
-import com.qualaboa.msauth.repositories.CategoryRepository;
-import com.qualaboa.msauth.repositories.EstablishmentRepository;
-import com.qualaboa.msauth.repositories.RelationshipRepository;
+import com.qualaboa.msauth.repositories.*;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
 import jakarta.persistence.criteria.Join;
@@ -51,6 +48,8 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
 
     @Autowired
     private EstablishmentMapper mapper;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     @Transactional
@@ -143,7 +142,25 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
         }
         return response;
     }
-
+    
+    @Transactional
+    public List<EstablishmentResponseDTO> findEstablishmentsByUserId(UUID userId) {
+        if(userId == null) throw new IllegalArgumentException("user id is null");
+        if(!userRepository.existsById(userId)) throw new ResourceNotFoundException("User not found");
+        RelationshipEmbeddedId id = new RelationshipEmbeddedId();
+        id.setUserId(userId);
+        id.setInteractionType(InteractionTypeEnum.FAVORITE);
+        Relationship example = new Relationship();
+        example.setId(id);
+        List<Relationship> relationshipsFound = relationshipRepository.findAll(Example.of(example));
+        List<Establishment> establishmentsFound = new ArrayList<>();
+        for(Relationship relationship : relationshipsFound) {
+            Optional<Establishment> establishmentFound = repository.findById(relationship.getId().getEstablishmentId());
+            establishmentFound.ifPresent(establishmentsFound::add);
+        }
+        return mapper.toDto(establishmentsFound);
+    }
+    
     private Specification<Establishment> createFilter(EstablishmentSearchDTO request) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
