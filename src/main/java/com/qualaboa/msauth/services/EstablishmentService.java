@@ -152,6 +152,7 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
             }
 
             if (request.getCategories() != null && !request.getCategories().isEmpty()) {
+                List<Predicate> categoryPredicates = new ArrayList<>();
                 Join<Establishment, Category> join = root.join("categories");
 
                 for (CategoryEmbeddedId id : request.getCategories()) {
@@ -160,12 +161,15 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
                     Predicate predicateCategory = criteriaBuilder.equal(join.get("id").get("category"), id.getCategory());
 
                     Predicate categoryPredicate = criteriaBuilder.and(predicateCategoryType, predicateCategory);
-                    predicates.add(categoryPredicate);
+                    categoryPredicates.add(categoryPredicate);
                 }
+                predicates.add(criteriaBuilder.or(categoryPredicates.toArray(new Predicate[0])));
             }
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
+
 
     private EstablishmentResponseDTO[] sortByPrice(List<EstablishmentResponseDTO> response, SortOrderEnum sortOrder) {
         EstablishmentResponseDTO[] array = new EstablishmentResponseDTO[response.size()];
