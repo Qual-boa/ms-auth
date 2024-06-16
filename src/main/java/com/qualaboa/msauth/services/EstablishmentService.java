@@ -14,6 +14,7 @@ import com.qualaboa.msauth.repositories.RelationshipRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import com.qualaboa.msauth.services.interfaces.IServiceSave;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Predicate;
 import org.apache.coyote.BadRequestException;
@@ -23,6 +24,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -147,29 +150,34 @@ public class EstablishmentService implements IServiceSave<EstablishmentCreateDTO
 
             Path<String> names = root.get("fantasyName");
 
+            Join<Establishment, Information> informationJoin = root.join("information", JoinType.LEFT);
+            Path<String> descriptions = informationJoin.get("description");
+
             if (request.getName() != null) {
-                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(names), "%" + request.getName().toLowerCase() + "%"));
+                String searchPattern = "%" + request.getName().toLowerCase() + "%";
+                Predicate namePredicate = criteriaBuilder.like(criteriaBuilder.lower(names), searchPattern);
+                Predicate descriptionPredicate = criteriaBuilder.like(criteriaBuilder.lower(descriptions), searchPattern);
+
+                predicates.add(criteriaBuilder.or(namePredicate, descriptionPredicate));
             }
 
             if (request.getCategories() != null && !request.getCategories().isEmpty()) {
-                List<Predicate> categoryPredicates = new ArrayList<>();
-                Join<Establishment, Category> join = root.join("categories");
+                query.distinct(true);
 
                 for (CategoryEmbeddedId id : request.getCategories()) {
                     categoryService.updateCategory(id);
+                    Join<Establishment, Category> join = root.join("categories");
                     Predicate predicateCategoryType = criteriaBuilder.equal(join.get("id").get("categoryType"), id.getCategoryType());
                     Predicate predicateCategory = criteriaBuilder.equal(join.get("id").get("category"), id.getCategory());
 
                     Predicate categoryPredicate = criteriaBuilder.and(predicateCategoryType, predicateCategory);
-                    categoryPredicates.add(categoryPredicate);
+                    predicates.add(categoryPredicate);
                 }
-                predicates.add(criteriaBuilder.or(categoryPredicates.toArray(new Predicate[0])));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
-
 
     private EstablishmentResponseDTO[] sortByPrice(List<EstablishmentResponseDTO> response, SortOrderEnum sortOrder) {
         EstablishmentResponseDTO[] array = new EstablishmentResponseDTO[response.size()];
