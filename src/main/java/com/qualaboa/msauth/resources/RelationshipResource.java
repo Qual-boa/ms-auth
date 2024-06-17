@@ -34,5 +34,11 @@ public class RelationshipResource {
         if (average == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok().body(average);
     }
+
+    @GetMapping("/establishments/top-3")
+    public ResponseEntity<List<Object[]>> findTop3EstablishmentsByAverageRate() {
+        List<Object[]> list = service.findTop3EstablishmentsByAverageRate();
+        return list.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(list);
+    }
     
 }

@@ -16,4 +16,11 @@ public interface RelationshipRepository  extends CrudRepository<Relationship, Re
 
     @Query("SELECT AVG(r.rate) FROM Relationship r WHERE r.id.establishmentId = :establishmentId")
     Double findAverageRateByEstablishmentId(@Param("establishmentId") UUID establishmentId);
+
+    @Query("SELECT r.id.establishmentId, AVG(r.rate) as avgRate " +
+            "FROM Relationship r " +
+            "GROUP BY r.id.establishmentId " +
+            "ORDER BY avgRate DESC " +
+            "LIMIT 3")
+    List<Object[]> findTop3EstablishmentsByAverageRate();
 }
