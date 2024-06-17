@@ -58,7 +58,7 @@ public class AccessCounterService {
 
     public DashboardDataDTO getDashboardDataByEstablishmentId(UUID establishmentId) {
         DashboardDataDTO dashboardDataDTO = new DashboardDataDTO();
-        Double averageClicks = repository.findAverageClicksPerMonth();
+        Double averageClicks = repository.findAverageClicksPerMonth(establishmentId);
         Integer favoriteCount = getFavoriteCount(establishmentId);
 
         dashboardDataDTO.setClicksPerDayLast7Days(getClicksPerDayLast7Days());

@@ -16,9 +16,10 @@ public interface AccessCounterRepository extends JpaRepository<AccessCounter, UU
 
     @Query("SELECT AVG(monthlyClicks.count) " +
             "FROM (SELECT COUNT(ac) AS count " +
-            "FROM AccessCounter ac " +
-            "GROUP BY FUNCTION('date_part', 'month', ac.accessedAt)) AS monthlyClicks")
-    Double findAverageClicksPerMonth();
+            "      FROM AccessCounter ac " +
+            "      WHERE ac.establishmentId = :establishmentId " +
+            "      GROUP BY EXTRACT(MONTH FROM ac.accessedAt)) AS monthlyClicks")
+    Double findAverageClicksPerMonth(@Param("establishmentId") UUID establishmentId);
 
     @Query("SELECT TO_CHAR(ac.accessedAt, 'Day') AS dayOfWeek, COUNT(ac) AS count " +
             "FROM AccessCounter ac " +
