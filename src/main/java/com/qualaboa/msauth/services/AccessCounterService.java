@@ -11,9 +11,12 @@ import com.qualaboa.msauth.repositories.CategoryRepository;
 import com.qualaboa.msauth.repositories.RelationshipRepository;
 import com.qualaboa.msauth.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -37,12 +40,27 @@ public class AccessCounterService {
         if (establishmentAccess.isEmpty()) throw new ResourceNotFoundException("Establishment not found or without access counter");
         return establishmentAccess;
     }
-    
+
+    public FileSystemResource fileCsv(UUID establishmentId) throws IOException {
+        DashboardDataDTO dashboardDataDTO = getDashboardDataByEstablishmentId(establishmentId);
+
+        String fileName = "dashboardData" + LocalDate.now() + ".csv";
+        return recordFileCsv(dashboardDataDTO, fileName);
+    }
+
+    private FileSystemResource recordFileCsv(DashboardDataDTO dashboardDataDTO, String fileName) throws IOException {
+        String csvContent = dashboardDataDTO.toCSV();
+        FileWriter file = new FileWriter(fileName);
+        file.write(csvContent);
+        file.close();
+        return new FileSystemResource(fileName);
+    }
+
     public DashboardDataDTO getDashboardDataByEstablishmentId(UUID establishmentId) {
         DashboardDataDTO dashboardDataDTO = new DashboardDataDTO();
         Double averageClicks = repository.findAverageClicksPerMonth();
         Integer favoriteCount = getFavoriteCount(establishmentId);
-        
+
         dashboardDataDTO.setClicksPerDayLast7Days(getClicksPerDayLast7Days());
         dashboardDataDTO.setRate(relationshipRepository.findAverageRateByEstablishmentId(establishmentId));
         dashboardDataDTO.setAverageClicksPerMonth(averageClicks == null ? 0 : averageClicks);
@@ -62,18 +80,23 @@ public class AccessCounterService {
                         entry -> (Long) entry.get("count")
                 ));
 
-        List<Map<String, Object>> result = new ArrayList<>();
+        Stack<Map<String, Object>> stack = new Stack<>();
         for (int i = 0; i < 7; i++) {
             LocalDate date = LocalDate.now().minusDays(i);
             Map<String, Object> dayResult = new HashMap<>();
             dayResult.put("date", date);
             dayResult.put("count", clicksPerDayMap.getOrDefault(date, 0L));
-            result.add(dayResult);
+            stack.push(dayResult);
+        }
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        while (!stack.isEmpty()) {
+            result.add(stack.pop());
         }
 
         return result;
     }
-    
+
     private Integer getFavoriteCount(UUID establishmentId) {
         RelationshipEmbeddedId id = new RelationshipEmbeddedId();
         id.setEstablishmentId(establishmentId);
