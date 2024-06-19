@@ -19,10 +19,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class AccessCounterService {
@@ -46,6 +44,14 @@ public class AccessCounterService {
 
         String fileName = "dashboardData" + LocalDate.now() + ".csv";
         return recordFileCsv(dashboardDataDTO, fileName);
+    }
+
+    public String fileCsvFromString(UUID establishmentId) throws IOException {
+        DashboardDataDTO dashboardDataDTO = getDashboardDataByEstablishmentId(establishmentId);
+        if(dashboardDataDTO == null) {
+            throw new ResourceNotFoundException("Dashboard not found");
+        }
+        return dashboardDataDTO.toCSV();
     }
 
     private FileSystemResource recordFileCsv(DashboardDataDTO dashboardDataDTO, String fileName) throws IOException {

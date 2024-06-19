@@ -61,4 +61,14 @@ public class AccessCounterResource {
         logger.info("Returning response with status OK");
         return new ResponseEntity<FileSystemResource>(file, httpHeaders, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/file/{establishmentId}/string")
+    public ResponseEntity<String> createCsvFromString(@PathVariable UUID establishmentId) {
+        try {
+            String string = service.fileCsvFromString(establishmentId);
+            return ResponseEntity.ok(string);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
