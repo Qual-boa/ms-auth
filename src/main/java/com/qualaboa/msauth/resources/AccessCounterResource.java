@@ -59,6 +59,6 @@ public class AccessCounterResource {
         httpHeaders.setContentDisposition(disposition);
 
         logger.info("Returning response with status OK");
-        return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<FileSystemResource>(file, httpHeaders, HttpStatus.OK);
     }
 }
