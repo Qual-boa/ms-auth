@@ -3,6 +3,8 @@ package com.qualaboa.msauth.resources;
 import com.qualaboa.msauth.dataContract.dtos.Access.DashboardDataDTO;
 import com.qualaboa.msauth.dataContract.entities.AccessCounter;
 import com.qualaboa.msauth.services.AccessCounterService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
@@ -16,6 +18,9 @@ import java.util.UUID;
 @RequestMapping("/access")
 @CrossOrigin(origins = "*")
 public class AccessCounterResource {
+
+    private static final Logger logger = LoggerFactory.getLogger(AccessCounterResource.class);
+
     @Autowired
     private AccessCounterService service;
     
@@ -34,17 +39,26 @@ public class AccessCounterResource {
 
     @GetMapping(value = "/file/{establishmentId}", produces = "text/csv")
     public ResponseEntity<FileSystemResource> getFile(@PathVariable UUID establishmentId) throws IOException {
+        logger.info("Received request for file with establishmentId: {}", establishmentId);
+
         var file = service.fileCsv(establishmentId);
-        MediaType mediaType = MediaTypeFactory
-                .getMediaType(file)
+        logger.info("File retrieved: {}", file.getFilename());
+
+        MediaType mediaType = MediaTypeFactory.getMediaType(file)
                 .orElse(MediaType.APPLICATION_OCTET_STREAM);
+        logger.info("Determined media type: {}", mediaType);
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(mediaType);
-        ContentDisposition disposition = ContentDisposition
-                .attachment()
+
+        ContentDisposition disposition = ContentDisposition.attachment()
                 .filename(file.getFilename())
                 .build();
+        logger.info("Content disposition set to: {}", disposition);
+
         httpHeaders.setContentDisposition(disposition);
+
+        logger.info("Returning response with status OK");
         return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);
     }
 }
