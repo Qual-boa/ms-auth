@@ -50,7 +50,7 @@ public class AccessCounterResource {
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(mediaType);
-
+        httpHeaders.setAccessControlExposeHeaders(List.of("Content-Disposition"));
         ContentDisposition disposition = ContentDisposition.attachment()
                 .filename(file.getFilename())
                 .build();
