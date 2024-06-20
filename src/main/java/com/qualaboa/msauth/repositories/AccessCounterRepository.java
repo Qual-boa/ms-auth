@@ -35,8 +35,9 @@ public interface AccessCounterRepository extends JpaRepository<AccessCounter, UU
 
     @Query("SELECT CAST(ac.accessedAt AS LocalDate) AS date, COUNT(ac) AS count " +
             "FROM AccessCounter ac " +
-            "WHERE ac.accessedAt >= :startDate " +
+            "WHERE ac.accessedAt >= :startDate AND ac.establishmentId = :establishmentId " +
             "GROUP BY CAST(ac.accessedAt AS LocalDate) " +
             "ORDER BY CAST(ac.accessedAt AS LocalDate)")
-    List<Map<String, Object>> findClicksPerDayLast7Days(LocalDateTime startDate);
+    List<Map<String, Object>> findClicksPerDayLast7Days(@Param("startDate") LocalDateTime startDate, @Param("establishmentId") UUID establishmentId);
 }
+

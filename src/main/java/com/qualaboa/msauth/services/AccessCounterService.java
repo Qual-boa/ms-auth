@@ -67,7 +67,7 @@ public class AccessCounterService {
         Double averageClicks = repository.findAverageClicksPerMonth(establishmentId);
         Integer favoriteCount = getFavoriteCount(establishmentId);
 
-        dashboardDataDTO.setClicksPerDayLast7Days(getClicksPerDayLast7Days());
+        dashboardDataDTO.setClicksPerDayLast7Days(getClicksPerDayLast7Days(establishmentId));
         dashboardDataDTO.setRate(relationshipRepository.findAverageRateByEstablishmentId(establishmentId));
         dashboardDataDTO.setAverageClicksPerMonth(averageClicks == null ? 0 : averageClicks);
         dashboardDataDTO.setDayOfWeekWithMostClicks(repository.findDayOfWeekWithMostClicks());
@@ -77,9 +77,9 @@ public class AccessCounterService {
         return dashboardDataDTO;
     }
 
-    public List<Map<String, Object>> getClicksPerDayLast7Days() {
+    public List<Map<String, Object>> getClicksPerDayLast7Days(UUID establishmentId) {
         LocalDateTime startDate = LocalDateTime.now().minusDays(7);
-        List<Map<String, Object>> clicksPerDay = repository.findClicksPerDayLast7Days(startDate);
+        List<Map<String, Object>> clicksPerDay = repository.findClicksPerDayLast7Days(startDate, establishmentId);
         Map<LocalDate, Long> clicksPerDayMap = clicksPerDay.stream()
                 .collect(Collectors.toMap(
                         entry -> (LocalDate) entry.get("date"),
