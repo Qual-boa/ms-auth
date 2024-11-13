@@ -11,6 +11,8 @@ jobs:
 
   build-image:
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
 
@@ -18,11 +20,26 @@ jobs:
         id: build
         run: |
           docker build . --file Dockerfile --tag mydockerid103017/ms-auth-spring-boot:latest
+          docker save mydockerid103017/ms-auth-spring-boot:latest -o ms-auth-spring-boot.tar
+
+      - name: Upload image for push job
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image
+          path: ms-auth-spring-boot.tar
 
   push-to-registry:
     runs-on: ubuntu-latest
     needs: build-image
     steps:
+      - name: Download image from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image
+
+      - name: Load Docker image
+        run: docker load -i ms-auth-spring-boot.tar
+
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
