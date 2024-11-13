@@ -1,8 +1,8 @@
-name: Docker Image CI
+name: 'Docker Image And Push to Registry'
 
 on:
   workflow_run:
-    workflows: ["Java CI with Maven"]
+    workflows: ["Dependency review"]
     types:
       - completed
 

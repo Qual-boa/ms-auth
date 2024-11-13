@@ -1,10 +1,10 @@
-name: Java CI with Maven
+name: Build Maven
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [ "main" ]
   workflow_dispatch:  
 
 jobs:
