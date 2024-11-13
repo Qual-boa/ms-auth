@@ -11,8 +11,6 @@ jobs:
 
   build-image:
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
 
@@ -20,7 +18,6 @@ jobs:
         id: build
         run: |
           docker build . --file Dockerfile --tag mydockerid103017/ms-auth-spring-boot:latest
-          echo "image_tag=mydockerid103017/ms-auth-spring-boot:latest" >> $GITHUB_ENV
 
   push-to-registry:
     runs-on: ubuntu-latest
@@ -30,4 +27,4 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Push Docker image to Docker Hub
-        run: docker push ${{ env.image_tag }}
+        run: docker push mydockerid103017/ms-auth-spring-boot:latest
