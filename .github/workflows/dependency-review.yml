@@ -1,9 +1,8 @@
 name: 'Dependency review'
 on:
-  workflow_run:
-    workflows: ["Build Maven"]
-    types:
-      - completed
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -12,6 +11,7 @@ permissions:
 jobs:
   dependency-review:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: 'Checkout repository'
         uses: actions/checkout@v4
