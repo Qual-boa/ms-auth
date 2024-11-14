@@ -1,4 +1,4 @@
-name: 'Deploy'
+name: 'Call Deploy Dev'
 
 on:
   workflow_run:
@@ -10,6 +10,11 @@ jobs:
   deploy-api:
     runs-on: self-hosted
     steps:
+      - name: Manual Approval
+        uses: hakonhageberg/manual-approval@v1
+        with:
+          approvers: 'samlucena'
+
       - name: Pull Docker Image
         run: sudo docker pull mydockerid103017/ms-auth-spring-boot:latest
 
