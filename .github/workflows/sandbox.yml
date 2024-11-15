@@ -77,3 +77,25 @@ jobs:
 
       - name: Run Docker Container
         run: sudo docker run --name ms-auth-app -d -p 8080:8080 mydockerid103017/ms-auth-spring-boot:latest
+
+      - name: Get Public IP Address
+        id: get_ip
+        run: |
+          PUBLIC_IP=$(curl -s ifconfig.me)
+          echo "Public IP Address: $PUBLIC_IP"
+          echo "::set-output name=public_ip::$PUBLIC_IP"
+
+      - name: Create README of Execution
+        run: |
+          echo "# Resumo da execução" > README.md
+          echo "" >> README.md
+          echo "## Deploy da Api" >> README.md
+          echo "- **Public IP**: ${{ steps.get_ip.outputs.public_ip }}" >> README.md
+          echo "- **API URL**: http://${{ steps.get_ip.outputs.public_ip }}:8080/api/ms-auth" >> README.md
+          echo "" >> README.md
+
+      - name: Upload README as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Deployment-README
+          path: README.md
