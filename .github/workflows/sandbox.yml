@@ -82,5 +82,4 @@ jobs:
         id: get_ip
         run: |
           PUBLIC_IP=$(curl -s ifconfig.me)
-          echo "Public IP Address: http://$PUBLIC_IP/api/ms-auth"
-          echo "public_ip=$PUBLIC_IP" >> $GITHUB_ENV
+          echo "API: http://$PUBLIC_IP:8080/api/ms-auth"
