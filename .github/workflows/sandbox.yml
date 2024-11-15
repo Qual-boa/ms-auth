@@ -1,16 +1,31 @@
-name: 'Docker Image And Push to Registry'
+name: "Workflow Sandbox"
 
 on:
-  workflow_run:
-    workflows: ["Build Maven"]
-    types:
-      - completed
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:  
 
 jobs:
+  build-artifact:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'oracle'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
 
   build-image:
+    needs: build
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     outputs:
       image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
@@ -29,9 +44,8 @@ jobs:
           path: ms-auth-spring-boot.tar
 
   push-to-registry:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     needs: build-image
+    runs-on: ubuntu-latest
     steps:
       - name: Download image from build job
         uses: actions/download-artifact@v3
@@ -46,3 +60,19 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push mydockerid103017/ms-auth-spring-boot:latest
+
+  deploy-api:
+    needs: push-to-registry
+    runs-on: self-hosted
+    steps:
+      - name: Pull Docker Image
+        run: sudo docker pull mydockerid103017/ms-auth-spring-boot:latest
+
+      - name: Stop Docker Container
+        run: sudo docker stop ms-auth-app || true
+
+      - name: Remove Docker Container
+        run: sudo docker rm ms-auth-app || true
+
+      - name: Run Docker Container
+        run: sudo docker run --name ms-auth-app -d -p 8080:8080 mydockerid103017/ms-auth-spring-boot:latest
