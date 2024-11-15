@@ -8,7 +8,7 @@ on:
   workflow_dispatch:  
 
 jobs:
-  build-artifact:
+  build:
 
     runs-on: ubuntu-latest
 
@@ -23,8 +23,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-  build-image:
-    needs: build-artifact
+  docker-image:
+    needs: build
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.build.outputs.image_tag }}
@@ -43,8 +43,8 @@ jobs:
           name: docker-image
           path: ms-auth-spring-boot.tar
 
-  push-to-registry:
-    needs: build-image
+  push-image:
+    needs: docker-image
     runs-on: ubuntu-latest
     steps:
       - name: Download image from build job
@@ -61,8 +61,8 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: docker push mydockerid103017/ms-auth-spring-boot:latest
 
-  deploy-api:
-    needs: push-to-registry
+  call-deploy-dev:
+    needs: push-image
     runs-on: self-hosted
     steps:
       - name: Pull Docker Image
