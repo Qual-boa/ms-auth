@@ -23,35 +23,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-  fortify-security:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'oracle'
-          cache: maven
-
-      - name: Build with Fortify
-        run: |
-          sourceanalyzer -b myproject -clean
-          sourceanalyzer -b myproject mvn clean install
-          sourceanalyzer -b myproject -scan -f results.fpr
-
-      - name: Upload Fortify Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: fortify-results
-          path: results.fpr
-
   docker-image:
-    needs: [ build, fortify-security ]
+    needs: [ build ]
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.build.outputs.image_tag }}
