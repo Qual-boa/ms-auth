@@ -24,7 +24,7 @@ jobs:
       run: mvn -B package --file pom.xml
 
   build-image:
-    needs: build
+    needs: build-artifact
     runs-on: ubuntu-latest
     outputs:
       image_tag: ${{ steps.build.outputs.image_tag }}
