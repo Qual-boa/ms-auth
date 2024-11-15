@@ -29,7 +29,7 @@ jobs:
     outputs:
       image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v3
 
       - name: Build the Docker image
         id: build
@@ -62,6 +62,7 @@ jobs:
         run: docker push mydockerid103017/ms-auth-spring-boot:latest
 
   call-deploy-dev:
+    environment: development
     needs: push-image
     runs-on: self-hosted
     steps:
